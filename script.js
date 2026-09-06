@@ -184,7 +184,7 @@ function createProjectCard(project, index) {
     card.innerHTML = `
         <div class="card-topline">
             <span class="card-index">${String(index + 1).padStart(2, "0")}</span>
-            <button class="delete-btn" type="button" title="Delete project" aria-label="Delete ${escapeHTML(project.name)}" data-index="${index}">×</button>
+            <button class="delete-btn" type="button" title="Delete project" aria-label="Delete ${escapeHTML(project.projectName)}" data-project-id="${escapeAttribute(project.id)}">×</button>
         </div>
         <div class="card-visual" aria-hidden="true">
             <span class="visual-orbit visual-orbit-one"></span>
@@ -206,7 +206,7 @@ function createProjectCard(project, index) {
         </div>
     `;
 
-    card.querySelector(".delete-btn").addEventListener("click", () => deleteProject(index));
+    card.querySelector(".delete-btn").addEventListener("click", () => deleteProject(project.id));
     return card;
 }
 
@@ -229,7 +229,8 @@ function bindCardMotion() {
     });
 }
 
-function deleteProject(index) {
+function deleteProject(projectId) {
+    const index = projects.findIndex((project) => project.id === projectId);
     const project = projects[index];
     if (!project) return;
 
