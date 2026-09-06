@@ -164,15 +164,15 @@ body[data-theme="day"] {
     --bg-soft: #ffffff;
     --panel: rgba(255, 255, 255, 0.78);
     --panel-solid: #ffffff;
-    --line: rgba(20, 26, 39, 0.12);
-    --line-strong: rgba(20, 26, 39, 0.24);
-    --text: #161a27;
-    --muted: #62697a;
-    --quiet: #8b92a1;
-    --acid: #7b9810;
-    --acid-dark: #647e08;
-    --violet: #6353ce;
-    --coral: #d7654e;
+    --line: rgba(20, 26, 39, 0.18);
+    --line-strong: rgba(20, 26, 39, 0.34);
+    --text: #111522;
+    --muted: #3f4858;
+    --quiet: #687181;
+    --acid: #4e6900;
+    --acid-dark: #3c5200;
+    --violet: #4c3bb3;
+    --coral: #bd4f3b;
     background: var(--bg);
 }
 body[data-theme="day"]::before { background: radial-gradient(circle at 50% -10%, rgba(119, 103, 229, 0.14), transparent 38%), #f4f6f1; }
@@ -184,7 +184,28 @@ body[data-theme="day"] .orbit-core { background: radial-gradient(circle at 32% 2
 body[data-theme="day"] .modal-content { background: linear-gradient(145deg, #ffffff, #eef2eb); box-shadow: 0 30px 90px rgba(28, 37, 44, 0.2); }
 body[data-theme="day"] .form-group input, body[data-theme="day"] .search-box input { background: rgba(255, 255, 255, 0.72); }
 body[data-theme="day"] .theme-toggle-track { background: rgba(20, 26, 39, 0.1); }
-body[data-theme="day"] .theme-toggle-track span { background: var(--violet); box-shadow: 0 0 10px rgba(99, 83, 206, 0.32); }
+body[data-theme="day"] .theme-toggle-track span { background: var(--violet); box-shadow: 0 0 10px rgba(76, 59, 179, 0.32); }
+body[data-theme="day"] .hero-description,
+body[data-theme="day"] .section-subtitle,
+body[data-theme="day"] .project-info,
+body[data-theme="day"] .footer-content { color: var(--muted); }
+body[data-theme="day"] .stat-label,
+body[data-theme="day"] .card-type,
+body[data-theme="day"] .id-label,
+body[data-theme="day"] .footer-id,
+body[data-theme="day"] .project-name-label { color: var(--quiet); }
+body[data-theme="day"] .project-owner,
+body[data-theme="day"] .project-name-value,
+body[data-theme="day"] .section-heading h2,
+body[data-theme="day"] .hero-copy h1 { color: var(--text); }
+body[data-theme="day"] .button-primary { color: #ffffff; background: #516d00; }
+body[data-theme="day"] .open-btn,
+body[data-theme="day"] .text-link,
+body[data-theme="day"] .project-id,
+body[data-theme="day"] .search-result-text { color: var(--acid-dark); }
+body[data-theme="day"] .search-icon,
+body[data-theme="day"] .eyebrow,
+body[data-theme="day"] .footer-id { color: var(--acid-dark); }
 
 /* Hero */
 .hero-section {
