@@ -178,8 +178,9 @@
 
   /* =========================================================
      2. Generated isometric cover art
-     Same palette + geometry for every project; the layout,
-     tower heights and centre icon are seeded from the name.
+     Each project gets its own colour family (picked from its
+     name), on top of the shared layout, tower heights and
+     centre icon that are also seeded from the name.
      ========================================================= */
   function hashSeed(str) {
     let h = 1779033703 ^ str.length;
@@ -257,6 +258,12 @@
     const rand = mulberry32(hashSeed(name.toLowerCase()));
     const uid = "cv" + ++coverSeq;
 
+    // Each project name picks its own colour family (full hue wheel),
+    // so different projects read as visually distinct at a glance —
+    // not just different letters on the same blue/teal palette.
+    const baseHue = rand() * 360;
+    const satJitter = 0.9 + rand() * 0.2;
+
     const W = 32, H = 18.5, OX = 320, OY = 118, N = 6, SLAB = 12;
     const P = (x, y, z) => `${(OX + (x - y) * W).toFixed(1)} ${(OY + (x + y) * H - z).toFixed(1)}`;
     const edge = 'stroke="rgba(255,255,255,.38)" stroke-width=".8" stroke-linejoin="round"';
@@ -269,17 +276,18 @@
     });
     const block = (i, j, w, d, z0, z1, hue, lift = 0) => {
       const f = faces(i, j, w, d, z0, z1);
+      const sat = (84 * satJitter).toFixed(0);
       return (
-        poly(f.l, `fill="hsl(${hue.toFixed(0)} 88% ${50 + lift}%)" ${edge}`) +
-        poly(f.r, `fill="hsl(${hue.toFixed(0)} 84% ${37 + lift}%)" ${edge}`) +
-        poly(f.t, `fill="hsl(${hue.toFixed(0)} 92% ${66 + lift}%)" ${edge}`)
+        poly(f.l, `fill="hsl(${hue.toFixed(0)} ${sat}% ${50 + lift}%)" ${edge}`) +
+        poly(f.r, `fill="hsl(${hue.toFixed(0)} ${(sat - 4).toFixed(0)}% ${37 + lift}%)" ${edge}`) +
+        poly(f.t, `fill="hsl(${hue.toFixed(0)} ${(+sat + 6).toFixed(0)}% ${66 + lift}%)" ${edge}`)
       );
     };
 
     let out = "";
 
-    // soft glow under the platform
-    out += `<defs><radialGradient id="${uid}g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="hsl(200 95% 60%)" stop-opacity=".38"/><stop offset="1" stop-color="hsl(200 95% 60%)" stop-opacity="0"/></radialGradient></defs>`;
+    // soft glow under the platform, tinted to this project's hue
+    out += `<defs><radialGradient id="${uid}g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="hsl(${baseHue.toFixed(0)} 90% 60%)" stop-opacity=".38"/><stop offset="1" stop-color="hsl(${baseHue.toFixed(0)} 90% 60%)" stop-opacity="0"/></radialGradient></defs>`;
     out += `<ellipse cx="320" cy="262" rx="250" ry="96" fill="url(#${uid}g)"/>`;
 
     // platform slab + grid lines
@@ -305,11 +313,12 @@
     }
     const items = cells.slice(0, 6 + Math.floor(rand() * 3)).map(([i, j]) => {
       const h = 14 + rand() * 62;
-      const hue = 226 - ((i + j) / 10) * 56 + (rand() - 0.5) * 12;
+      // hues spread out from this project's base hue, not a fixed blue/cyan band
+      const hue = (baseHue - ((i + j) / 10) * 70 + (rand() - 0.5) * 16 + 360) % 360;
       return { i, j, w: 1, d: 1, h, hue, cap: rand() < 0.35, key: i + 1 + (j + 1) };
     });
     const heroH = 34 + rand() * 22;
-    items.push({ hero: true, i: 2, j: 2, w: 2, d: 2, h: heroH, hue: 204, key: 8 });
+    items.push({ hero: true, i: 2, j: 2, w: 2, d: 2, h: heroH, hue: baseHue, key: 8 });
     items.sort((a, b) => a.key - b.key || (b.hero ? 1 : 0) - (a.hero ? 1 : 0));
 
     items.forEach((it) => {
@@ -335,10 +344,10 @@
       out += glyph(mainAttrs) + "</g>";
     });
 
-    // floating chips
+    // floating chips, drifted to a complementary hue for a bit of contrast
     for (let k = 0; k < 4; k++) {
       const x = 90 + rand() * 460, y = 26 + rand() * 100, r = 5 + rand() * 5;
-      const hue = 170 + rand() * 56;
+      const hue = (baseHue + 130 + rand() * 100) % 360;
       out += `<g class="cv-bob" style="animation-delay:${(-rand() * 4).toFixed(2)}s"><polygon points="${x.toFixed(1)},${(y - r).toFixed(1)} ${(x + r).toFixed(1)},${y.toFixed(1)} ${x.toFixed(1)},${(y + r).toFixed(1)} ${(x - r).toFixed(1)},${y.toFixed(1)}" fill="hsl(${hue.toFixed(0)} 90% 62%)" opacity=".85"/></g>`;
     }
 
@@ -493,12 +502,22 @@
       dom.noMatchText.textContent = `Nothing matches ${bits.join(" with ")}. Try a different word, or clear the filters.`;
     }
 
+    // Keep the subtitle line for the moments it actually adds information —
+    // an active search/filter, or more than one page. Otherwise the "3"
+    // pill next to the heading already says everything, so hide it to
+    // avoid the doubled-up "All projects 3 / Showing 1–3 of 3" clutter.
+    const isFiltered = list.length !== all.length;
+    const isPaged = pages > 1;
     if (!all.length) {
-      dom.rangeText.textContent = "Nothing here yet.";
+      dom.rangeText.hidden = true;
     } else if (!list.length) {
+      dom.rangeText.hidden = false;
       dom.rangeText.textContent = "No results";
+    } else if (!isFiltered && !isPaged) {
+      dom.rangeText.hidden = true;
     } else {
-      const filteredNote = list.length !== all.length ? ` (filtered from ${all.length})` : "";
+      dom.rangeText.hidden = false;
+      const filteredNote = isFiltered ? ` (filtered from ${all.length})` : "";
       dom.rangeText.textContent = `Showing ${start + 1}–${start + slice.length} of ${list.length} project${list.length === 1 ? "" : "s"}${filteredNote}`;
     }
 
