@@ -163,15 +163,14 @@ button { font-family: inherit; }
   min-height: var(--topbar-h);
 }
 .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
-.brand-mark {
-  flex: none; width: 40px; height: 40px; border-radius: 12px;
-  display: grid; place-items: center;
-  background: var(--surface); border: 1px solid var(--line);
-  box-shadow: var(--shadow-1);
+.brand-mark { flex: none; width: 44px; height: 44px; display: block; }
+.brand-mark svg {
+  display: block; width: 100%; height: 100%; overflow: visible;
+  filter: drop-shadow(0 6px 10px rgba(36, 71, 245, .32));
 }
-.brand-mark svg { width: 24px; height: 20px; }
-.brand-mark.small { width: 32px; height: 32px; border-radius: 10px; box-shadow: none; }
-.brand-mark.small svg { width: 19px; height: 16px; }
+.brand:hover .brand-mark { --cap-lift: -3px; }
+.brand-mark.small { width: 30px; height: 30px; }
+.brand-mark.small svg { filter: none; }
 .brand-name { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -.02em; white-space: nowrap; }
 .topbar-actions { display: flex; align-items: center; gap: 10px; }
 
