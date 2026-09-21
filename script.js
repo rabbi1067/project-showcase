@@ -502,23 +502,25 @@
       dom.noMatchText.textContent = `Nothing matches ${bits.join(" with ")}. Try a different word, or clear the filters.`;
     }
 
-    // Keep the subtitle line for the moments it actually adds information —
-    // an active search/filter, or more than one page. Otherwise the "3"
-    // pill next to the heading already says everything, so hide it to
-    // avoid the doubled-up "All projects 3 / Showing 1–3 of 3" clutter.
+    // Always show a clear, legible count under the heading — never a tiny
+    // fading-into-the-background note. The wording steps up only as much
+    // detail as the moment actually needs.
     const isFiltered = list.length !== all.length;
     const isPaged = pages > 1;
     if (!all.length) {
       dom.rangeText.hidden = true;
     } else if (!list.length) {
       dom.rangeText.hidden = false;
-      dom.rangeText.textContent = "No results";
-    } else if (!isFiltered && !isPaged) {
-      dom.rangeText.hidden = true;
+      dom.rangeText.textContent = "No matching projects";
+    } else if (isFiltered) {
+      dom.rangeText.hidden = false;
+      dom.rangeText.textContent = `${list.length} of ${all.length} project${all.length === 1 ? "" : "s"} match`;
+    } else if (isPaged) {
+      dom.rangeText.hidden = false;
+      dom.rangeText.textContent = `Showing ${start + 1}–${start + slice.length} of ${list.length} projects`;
     } else {
       dom.rangeText.hidden = false;
-      const filteredNote = isFiltered ? ` (filtered from ${all.length})` : "";
-      dom.rangeText.textContent = `Showing ${start + 1}–${start + slice.length} of ${list.length} project${list.length === 1 ? "" : "s"}${filteredNote}`;
+      dom.rangeText.textContent = `${list.length} project${list.length === 1 ? "" : "s"}`;
     }
 
     dom.grid.innerHTML = slice.map((p, i) => cardHTML(p, i, state.page === 1 && i === 0 && !state.tag && !state.query.trim())).join("");
