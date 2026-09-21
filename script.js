@@ -476,21 +476,18 @@
     const showBadge = isFirstOnFirstPage && isRecent(p);
     const st = state.stats ? state.stats[String(p.id)] || { views: 0, loves: 0, loved: false } : null;
     const meta = st
-      ? `<div class="card-meta">
-          <button class="love-btn${st.loved ? " is-loved" : ""}" type="button" data-love="${esc(p.id)}" aria-pressed="${st.loved}" aria-label="${st.loved ? "Remove your love from" : "Love"} ${esc(p.title)}">${HEART}<span class="love-count">${fmtCount(st.loves)}</span></button>
-          <span class="views" title="Views">${EYE}<span class="views-count">${fmtCount(st.views)}</span><span class="visually-hidden"> views</span></span>
-        </div>`
+      ? `<button class="love-btn${st.loved ? " is-loved" : ""}" type="button" data-love="${esc(p.id)}" aria-pressed="${st.loved}" aria-label="${st.loved ? "Remove your love from" : "Love"} ${esc(p.title)}">${HEART}<span class="love-count">${fmtCount(st.loves)}</span></button>
+        <span class="views" title="Views">${EYE}<span class="views-count">${fmtCount(st.views)}</span><span class="visually-hidden"> views</span></span>`
       : "";
     return `
       <article class="card${state.animate ? " enter" : ""}" style="--i:${i}" data-id="${esc(p.id)}">
-        <div class="card-media">${coverSVG(p.title)}${showBadge ? '<span class="badge">New</span>' : ""}</div>
+        <div class="card-media">${coverSVG(p.title)}${showBadge ? '<span class="badge">New</span>' : ""}${meta}</div>
         <div class="card-body">
           <h3>${esc(p.title)}</h3>
           ${p.description ? `<p>${esc(p.description)}</p>` : ""}
           ${tags ? `<ul class="tags" aria-label="Tags">${tags}</ul>` : ""}
           ${links ? `<div class="card-links">${links}</div>` : ""}
         </div>
-        ${meta}
         <div class="card-foot">
           <span>${esc(added)}</span>
           <button class="link-delete" type="button" data-delete="${esc(p.id)}" aria-label="Delete ${esc(p.title)}">Delete</button>
