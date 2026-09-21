@@ -304,8 +304,7 @@ button { font-family: inherit; }
 }
 .search input:focus ~ kbd, .search input:not(:placeholder-shown) ~ kbd { display: none; }
 
-.chips { display: flex; gap: 8px; flex: 1 1 auto; min-width: 0; overflow-x: auto; padding: 4px 2px; scrollbar-width: none; }
-.chips::-webkit-scrollbar { display: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 100%; min-width: 0; padding: 2px 0; }
 .chip {
   flex: none; font: inherit; font-size: .9rem; font-weight: 600;
   min-height: 38px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px;
