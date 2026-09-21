@@ -383,6 +383,26 @@ button { font-family: inherit; }
 }
 .link-delete:hover { color: var(--danger); text-decoration: underline; text-underline-offset: 3px; }
 
+/* love + views */
+.card-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 20px 14px; }
+.love-btn {
+  font: inherit; font-weight: 700; font-size: .9rem;
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 38px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--surface); color: var(--ink); cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease, color .15s ease;
+}
+.love-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; transition: fill .15s ease, stroke .15s ease; }
+.love-btn:hover { border-color: #E5484D; }
+.love-btn.is-loved { color: #E5484D; border-color: color-mix(in srgb, #E5484D 45%, var(--line)); background: color-mix(in srgb, #E5484D 9%, var(--surface)); }
+.love-btn.is-loved svg { fill: #E5484D; stroke: #E5484D; }
+.love-btn.pop svg { animation: heart-pop .35s cubic-bezier(.2, .9, .3, 1.4); }
+.love-btn[disabled] { cursor: wait; }
+@keyframes heart-pop { 40% { transform: scale(1.35); } }
+.views { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-weight: 700; font-size: .9rem; }
+.views svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+
 /* skeleton */
 .skeleton { min-height: 380px; border-color: transparent; box-shadow: none; }
 .skeleton::before {
