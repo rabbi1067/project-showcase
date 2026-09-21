@@ -1,637 +1,247 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Md Fazley Rabbi | Projects</title>
-  <meta name="description" content="A collection of projects built by Md Fazley Rabbi.">
-  <meta name="theme-color" content="#F6F7F9" id="metaTheme">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FR Foundry · Projects by Fazley Rabbi</title>
+<meta name="description" content="Live demos and source code for projects built by Fazley Rabbi.">
+<meta name="theme-color" content="#F2F5FB" id="metaTheme">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='400 420 470 370'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232447F5'/%3E%3Cstop offset='.55' stop-color='%230FC4E6'/%3E%3Cstop offset='1' stop-color='%2312D89E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M750 438C810 438 850 480 850 540C850 590 820 625 778 638L850 772H786L718 641H646V590H750C775 590 794 570 794 545C794 520 775 494 750 494H422V438ZM422 585H594V638H474V772H422Z'/%3E%3C/svg%3E">
 
-  <!-- Apply saved theme before the page paints (no flash) -->
-  <script>
-    (function () {
-      try {
-        var t = localStorage.getItem("theme");
-        if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        document.documentElement.setAttribute("data-theme", t);
-      } catch (e) {}
-    })();
-  </script>
+<!-- Apply saved theme before first paint (no flash) -->
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("theme");
+    if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+    var m = document.getElementById("metaTheme");
+    if (m) m.setAttribute("content", t === "dark" ? "#060A15" : "#F2F5FB");
+  } catch (e) {}
+})();
+</script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-/* =====================================================
-   Theme tokens (light = default, dark via [data-theme="dark"])
-   ===================================================== */
-:root {
-  color-scheme: light;
-  --bg: #F6F7F9;
-  --surface: #FFFFFF;
-  --surface-2: #EDF0F5;
-  --ink: #0F1729;
-  --muted: #586174;
-  --line: #DDE1E8;
-  --accent: #2B4EFF;
-  --on-accent: #FFFFFF;
-  --danger: #C62828;
-  --overlay: rgba(15, 23, 41, .45);
-  --tile-s: 65%;
-  --tile-l: 92%;
-  --tile-ink-l: 30%;
-
-  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
-  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-
-  --r-card: 16px;
-  --r-ctrl: 10px;
-  --r-dialog: 20px;
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #0C111C;
-  --surface: #131A28;
-  --surface-2: #1A2233;
-  --ink: #EAEEF6;
-  --muted: #9AA5BA;
-  --line: #263048;
-  --accent: #8CA2FF;
-  --on-accent: #0B1020;
-  --danger: #FF8A8A;
-  --overlay: rgba(0, 0, 0, .65);
-  --tile-s: 38%;
-  --tile-l: 20%;
-  --tile-ink-l: 78%;
-}
-
-/* =====================================================
-   Base
-   ===================================================== */
-*, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 80px; }
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.6;
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  -webkit-font-smoothing: antialiased;
-}
-main { flex: 1; }
-img { max-width: 100%; display: block; }
-a { color: inherit; }
-
-.wrap {
-  width: 100%;
-  max-width: 1160px;
-  margin-inline: auto;
-  padding-inline: clamp(16px, 4vw, 32px);
-}
-
-.visually-hidden {
-  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
-  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-}
-
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-
-/* =====================================================
-   Top bar
-   ===================================================== */
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--bg);
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
-  -webkit-backdrop-filter: saturate(160%) blur(12px);
-  backdrop-filter: saturate(160%) blur(12px);
-  border-bottom: 1px solid var(--line);
-}
-.topbar-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 68px;
-}
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  min-width: 0;
-}
-.brand-mark {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: .85rem;
-  font-weight: 800;
-}
-.brand-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.topbar-actions { display: flex; align-items: center; gap: 10px; }
-
-/* =====================================================
-   Buttons
-   ===================================================== */
-.btn {
-  font: inherit;
-  font-weight: 600;
-  font-size: .95rem;
-  min-height: 44px;
-  padding: 0 18px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-ctrl);
-  background: var(--surface);
-  color: var(--ink);
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  white-space: nowrap;
-  transition: background-color .15s ease, border-color .15s ease, opacity .15s ease;
-}
-.btn:hover { border-color: var(--muted); }
-.btn-primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
-.btn-primary:hover { opacity: .9; border-color: var(--accent); }
-.btn-ghost { background: transparent; }
-.btn-danger { background: var(--danger); color: var(--bg); border-color: var(--danger); }
-.btn-danger:hover { opacity: .9; border-color: var(--danger); }
-.btn[disabled] { opacity: .55; cursor: not-allowed; }
-.btn-small { min-height: 40px; padding: 0 14px; font-size: .9rem; }
-
-.icon-btn {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--ink);
-  cursor: pointer;
-  transition: border-color .15s ease;
-}
-.icon-btn:hover { border-color: var(--muted); }
-.icon-sun { display: none; }
-:root[data-theme="dark"] .icon-sun { display: block; }
-:root[data-theme="dark"] .icon-moon { display: none; }
-
-/* =====================================================
-   Hero
-   ===================================================== */
-.hero { padding-block: clamp(40px, 9vw, 104px) clamp(24px, 4vw, 44px); }
-.hero h1 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.6rem, 8.5vw, 5.75rem);
-  line-height: 1.02;
-  letter-spacing: -0.015em;
-  margin: 0 0 20px;
-  max-width: 15ch;
-  text-wrap: balance;
-}
-.hero-sub { margin: 0; color: var(--muted); max-width: 54ch; font-size: clamp(1rem, 2.2vw, 1.15rem); }
-
-/* =====================================================
-   Notice + toolbar
-   ===================================================== */
-.notice {
-  border: 1px solid var(--line);
-  background: var(--surface-2);
-  border-radius: var(--r-ctrl);
-  padding: 14px 18px;
-  margin-bottom: 24px;
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px 16px;
-  padding-bottom: 24px;
-}
-.search { position: relative; flex: 1 1 260px; max-width: 360px; display: block; }
-.search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-.search input {
-  font: inherit;
-  width: 100%;
-  min-height: 44px;
-  padding: 0 14px 0 42px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
-}
-.search input::placeholder { color: var(--muted); }
-
-.chips { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 auto; min-width: 0; }
-.chip {
-  font: inherit;
-  font-size: .9rem;
-  font-weight: 600;
-  min-height: 36px;
-  padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
-}
-.chip:hover { color: var(--ink); border-color: var(--muted); }
-.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-
-.count { margin: 0; color: var(--muted); font-size: .9rem; font-weight: 600; margin-left: auto; }
-
-/* =====================================================
-   Project grid + cards
-   ===================================================== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-  gap: clamp(16px, 2.4vw, 24px);
-  padding-bottom: 64px;
-}
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-card);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-width: 0;
-}
-.card-img, .card-tile {
-  aspect-ratio: 16 / 10;
-  width: 100%;
-  border-bottom: 1px solid var(--line);
-}
-.card-img { object-fit: cover; background: var(--surface-2); }
-.card-tile {
-  display: grid;
-  place-items: center;
-  background: hsl(var(--h) var(--tile-s) var(--tile-l));
-  color: hsl(var(--h) 45% var(--tile-ink-l));
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 9vw, 4.5rem);
-  line-height: 1;
-  user-select: none;
-}
-
-.card-body { padding: 20px 20px 16px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-.card h2 {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  overflow-wrap: anywhere;
-}
-.card p {
-  margin: 0;
-  color: var(--muted);
-  overflow-wrap: anywhere;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none; }
-.tags li {
-  font-size: .8rem;
-  font-weight: 600;
-  color: var(--muted);
-  background: var(--surface-2);
-  border-radius: 999px;
-  padding: 2px 10px;
-}
-
-.card-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 4px; }
-
-.card-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 6px 20px 6px;
-  border-top: 1px solid var(--line);
-  font-size: .85rem;
-  color: var(--muted);
-}
-.link-delete {
-  font: inherit;
-  font-weight: 600;
-  color: var(--muted);
-  background: none;
-  border: 0;
-  min-height: 40px;
-  padding: 0 2px;
-  cursor: pointer;
-}
-.link-delete:hover { color: var(--danger); text-decoration: underline; text-underline-offset: 3px; }
-
-/* loading skeleton */
-.skeleton {
-  min-height: 300px;
-  border-color: transparent;
-  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 50%, var(--surface) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s linear infinite;
-}
-@keyframes shimmer { to { background-position: -200% 0; } }
-
-/* empty states */
-.empty {
-  text-align: center;
-  border: 1px dashed var(--line);
-  border-radius: var(--r-card);
-  padding: clamp(32px, 6vw, 64px) 20px;
-  margin-bottom: 64px;
-}
-.empty h2 { margin: 0 0 6px; font-family: var(--font-display); font-weight: 400; font-size: 1.9rem; }
-.empty p { margin: 0 0 20px; color: var(--muted); }
-#noMatch p { margin-bottom: 0; }
-
-/* =====================================================
-   Footer
-   ===================================================== */
-.footer { border-top: 1px solid var(--line); padding-block: 28px; }
-.footer-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
-.copyright { margin: 0; color: var(--muted); font-size: .95rem; }
-.social { display: flex; gap: 10px; margin: 0; padding: 0; list-style: none; }
-.social a {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  color: var(--muted);
-  background: var(--surface);
-  transition: color .15s ease, border-color .15s ease;
-}
-.social a:hover { color: var(--accent); border-color: var(--accent); }
-
-/* =====================================================
-   Dialogs
-   ===================================================== */
-dialog {
-  width: min(560px, calc(100vw - 24px));
-  max-height: calc(100dvh - 24px);
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--r-dialog);
-  background: var(--surface);
-  color: var(--ink);
-  overflow: auto;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
-}
-dialog::backdrop { background: var(--overlay); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
-dialog[open] { animation: pop .18s ease-out; }
-@keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
-
-.dialog-body { padding: clamp(20px, 4vw, 30px); display: flex; flex-direction: column; gap: 16px; }
-.dialog-body h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 2rem; line-height: 1.1; }
-.dialog-body p { margin: 0; }
-.del-name { font-weight: 700; overflow-wrap: anywhere; }
-
-.field { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .95rem; min-width: 0; }
-.field small { font-weight: 400; color: var(--muted); }
-.field input, .field textarea {
-  font: inherit;
-  font-weight: 400;
-  width: 100%;
-  min-height: 46px;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-ctrl);
-  background: var(--bg);
-  color: var(--ink);
-}
-.field textarea { resize: vertical; min-height: 92px; }
-.field input:focus, .field textarea:focus, .search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
-.row { display: grid; grid-template-columns: 1fr; gap: 16px; }
-
-.form-error { color: var(--danger); font-weight: 600; font-size: .95rem; }
-.actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
-
-/* =====================================================
-   Toast
-   ===================================================== */
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: max(20px, env(safe-area-inset-bottom));
-  transform: translateX(-50%);
-  background: var(--ink);
-  color: var(--bg);
-  padding: 12px 20px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: .95rem;
-  z-index: 100;
-  max-width: calc(100vw - 32px);
-  text-align: center;
-}
-
-/* =====================================================
-   Responsive
-   ===================================================== */
-@media (min-width: 560px) {
-  .row { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 520px) {
-  .brand-name { display: none; }          /* keep the FR mark, save space */
-  .search { max-width: none; flex-basis: 100%; }
-  .count { margin-left: 0; }
-  .footer-inner { justify-content: center; }
-  .copyright { width: 100%; text-align: center; }
-  .social { justify-content: center; }
-}
-@media (min-width: 1400px) {
-  .wrap { max-width: 1280px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-}
-
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header class="topbar">
-    <div class="wrap topbar-inner">
-      <a class="brand" href="./" aria-label="Md Fazley Rabbi, home">
-        <span class="brand-mark" aria-hidden="true">FR</span>
-        <span class="brand-name">Md Fazley Rabbi</span>
-      </a>
-      <div class="topbar-actions">
-        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
-          <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        </button>
-        <button class="btn btn-primary" id="openAdd" type="button">Add project</button>
+<!-- Shared SVG sprite: FR monogram + icons -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="frGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2447F5"/>
+      <stop offset=".55" stop-color="#0FC4E6"/>
+      <stop offset="1" stop-color="#12D89E"/>
+    </linearGradient>
+    <symbol id="fr-mark" viewBox="400 420 470 370">
+      <path fill="url(#frGrad)" d="M750 438C810 438 850 480 850 540C850 590 820 625 778 638L850 772H786L718 641H646V590H750C775 590 794 570 794 545C794 520 775 494 750 494H422V438ZM422 585H594V638H474V772H422Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#projects">Skip to projects</a>
+<div class="bg" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="./" aria-label="FR Foundry, home">
+      <span class="brand-mark"><svg viewBox="400 420 470 370" aria-hidden="true"><use href="#fr-mark"/></svg></span>
+      <span class="brand-name">FR Foundry</span>
+    </a>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <button class="btn btn-primary" id="openAdd" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Add project</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="floor" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1>Everything I've built, ready to open.</h1>
+        <p class="hero-sub">Live demos, source code and experiments by Fazley Rabbi. Pick a project to try it, or read how it works.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#projects">Browse projects</a>
+          <button class="btn btn-lg" type="button" data-open-add>Add project</button>
+        </div>
+      </div>
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="scene" id="scene"></div>
       </div>
     </div>
-  </header>
+  </section>
 
-  <main class="wrap">
-    <section class="hero">
-      <h1>Things I've built, all in one place.</h1>
-      <p class="hero-sub">A growing collection of my projects. Open any of them, or read the code on GitHub.</p>
-    </section>
-
+  <section class="wrap projects" id="projects" aria-labelledby="projectsTitle">
     <div id="setupNotice" class="notice" hidden></div>
+
+    <div class="section-head">
+      <div>
+        <h2 id="projectsTitle">All projects <span class="pill" id="countPill">0</span></h2>
+        <p class="range" id="rangeText" aria-live="polite"></p>
+      </div>
+    </div>
 
     <div class="toolbar" id="toolbar" hidden>
       <label class="search">
         <span class="visually-hidden">Search projects</span>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="search" type="search" placeholder="Search projects" autocomplete="off">
+        <input id="search" type="search" placeholder="Search by name, description or tag" autocomplete="off">
+        <kbd aria-hidden="true">/</kbd>
       </label>
       <div class="chips" id="tagFilters" role="group" aria-label="Filter by tag"></div>
-      <p class="count" id="count" aria-live="polite"></p>
     </div>
 
-    <section id="grid" class="grid" aria-live="polite" aria-busy="true"></section>
+    <div id="grid" class="grid" aria-busy="true"></div>
+
+    <nav class="pager" id="pager" aria-label="Pagination" hidden></nav>
 
     <div id="noMatch" class="empty" hidden>
-      <h2>No matching projects</h2>
-      <p>Try a different word, or clear the tag filter.</p>
+      <h3>No matching projects</h3>
+      <p id="noMatchText">Try a different word, or clear the tag filter.</p>
+      <button class="btn" id="clearFilters" type="button">Clear search and filters</button>
     </div>
 
     <div id="empty" class="empty" hidden>
-      <h2>No projects yet</h2>
-      <p>Add your first project and it will show up on every device.</p>
-      <button class="btn btn-primary" id="emptyAdd" type="button">Add project</button>
+      <h3>No projects yet</h3>
+      <p>Add your first project and it will appear here on every device.</p>
+      <button class="btn btn-primary" data-open-add type="button">Add project</button>
     </div>
-  </main>
 
-  <footer class="footer">
-    <div class="wrap footer-inner">
-      <p class="copyright">&copy; <span id="year"></span> Md Fazley Rabbi</p>
-      <ul class="social" aria-label="Social links">
-        <li>
-          <a href="https://www.linkedin.com/in/fazleyrabbi1067/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://github.com/rabbi1067" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://x.com/FazleRabbi56251" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" title="X">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.facebook.com/fazleyrabbi1067/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.5-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
-          </a>
-        </li>
-      </ul>
+    <div id="errorState" class="empty" hidden>
+      <h3>Couldn't load projects</h3>
+      <p id="errorText"></p>
+      <button class="btn" id="retryBtn" type="button">Try again</button>
     </div>
-  </footer>
+  </section>
+</main>
 
-  <!-- Add project dialog -->
-  <dialog id="addDialog" aria-labelledby="addTitle">
-    <form id="addForm" class="dialog-body" novalidate>
-      <h2 id="addTitle">Add a project</h2>
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark small"><svg viewBox="400 420 470 370" aria-hidden="true"><use href="#fr-mark"/></svg></span>
+      <p class="copyright">&copy; <span id="year"></span> Fazley Rabbi</p>
+    </div>
+    <ul class="social" aria-label="Social links">
+      <li>
+        <a href="https://www.linkedin.com/in/fazleyrabbi1067/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/rabbi1067" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://x.com/FazleRabbi56251" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" title="X">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.facebook.com/fazleyrabbi1067/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.5-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
+        </a>
+      </li>
+    </ul>
+  </div>
+</footer>
 
-      <label class="field">
-        <span>Project name</span>
-        <input name="title" type="text" maxlength="80" required autocomplete="off">
-      </label>
-
-      <label class="field">
-        <span>What is it? <small>(optional)</small></span>
-        <textarea name="description" rows="3" maxlength="500"></textarea>
-      </label>
-
-      <div class="row">
-        <label class="field">
-          <span>Live link <small>(optional)</small></span>
-          <input name="live_url" type="url" inputmode="url" placeholder="https://" autocomplete="off">
-        </label>
-        <label class="field">
-          <span>GitHub link <small>(optional)</small></span>
-          <input name="repo_url" type="url" inputmode="url" placeholder="https://" autocomplete="off">
-        </label>
+<!-- Add project dialog -->
+<dialog id="addDialog" aria-labelledby="addTitle">
+  <div class="dlg">
+    <form id="addForm" class="dlg-form" novalidate>
+      <div class="dlg-head">
+        <h2 id="addTitle">Add project</h2>
+        <button class="icon-btn icon-btn-sm" type="button" data-close aria-label="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
       </div>
 
-      <label class="field">
-        <span>Image link <small>(optional)</small></span>
-        <input name="image_url" type="url" inputmode="url" placeholder="https://" autocomplete="off">
-      </label>
+      <div class="field">
+        <div class="field-top"><label for="f-title">Project name</label><small id="titleCount">0/50</small></div>
+        <input id="f-title" name="title" type="text" maxlength="50" autocomplete="off" required aria-describedby="err-title">
+        <p class="field-error" id="err-title" hidden></p>
+      </div>
 
-      <label class="field">
-        <span>Tags <small>(separate with commas)</small></span>
-        <input name="tags" type="text" placeholder="html, css, supabase" autocomplete="off">
-      </label>
+      <div class="field">
+        <div class="field-top"><label for="f-desc">Description <em>Optional</em></label><small id="descCount">0/100 words</small></div>
+        <textarea id="f-desc" name="description" rows="3" maxlength="800" aria-describedby="err-description"></textarea>
+        <p class="field-error" id="err-description" hidden></p>
+      </div>
 
-      <label class="field">
-        <span>Security code <small>(required to add)</small></span>
-        <input name="code" type="password" autocomplete="off" required>
-      </label>
+      <div class="row">
+        <div class="field">
+          <div class="field-top"><label for="f-repo">GitHub link</label></div>
+          <input id="f-repo" name="repo_url" type="url" inputmode="url" placeholder="https://github.com/username/repo" autocomplete="off" required aria-describedby="err-repo_url">
+          <p class="field-error" id="err-repo_url" hidden></p>
+        </div>
+        <div class="field">
+          <div class="field-top"><label for="f-live">Live link <em>Optional</em></label></div>
+          <input id="f-live" name="live_url" type="url" inputmode="url" placeholder="https://" autocomplete="off" aria-describedby="err-live_url">
+          <p class="field-error" id="err-live_url" hidden></p>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-top"><label for="f-tags">Tags <em>Optional, separate with commas</em></label></div>
+        <input id="f-tags" name="tags" type="text" placeholder="html, css, supabase" autocomplete="off" aria-describedby="err-tags">
+        <p class="field-error" id="err-tags" hidden></p>
+      </div>
+
+      <div class="field">
+        <div class="field-top"><label for="f-code">Security code</label></div>
+        <input id="f-code" name="code" type="password" autocomplete="off" required aria-describedby="err-code">
+        <p class="field-error" id="err-code" hidden></p>
+      </div>
 
       <p class="form-error" id="addError" role="alert" hidden></p>
 
       <div class="actions">
         <button class="btn btn-ghost" type="button" data-close>Cancel</button>
-        <button class="btn btn-primary" type="submit" id="addSubmit">Add to collection</button>
+        <button class="btn btn-primary" type="submit" id="addSubmit">Add project</button>
       </div>
     </form>
-  </dialog>
 
-  <!-- Delete dialog -->
-  <dialog id="deleteDialog" aria-labelledby="delTitle">
-    <form id="deleteForm" class="dialog-body" novalidate>
-      <h2 id="delTitle">Delete this project?</h2>
-      <p class="del-name" id="delName"></p>
-      <p>Enter the security code to delete it. This cannot be undone.</p>
+    <aside class="dlg-preview" aria-label="Cover preview">
+      <div class="preview-media" id="coverPreview"></div>
+      <p class="hint">The cover is generated from the project name. Change the name and it changes with it.</p>
+    </aside>
+  </div>
+</dialog>
 
-      <label class="field">
-        <span>Security code</span>
-        <input name="code" id="delCode" type="password" autocomplete="off" required>
-      </label>
+<!-- Delete dialog -->
+<dialog id="deleteDialog" aria-labelledby="delTitle" class="dlg-small">
+  <form id="deleteForm" class="dlg-form" novalidate>
+    <h2 id="delTitle">Delete this project?</h2>
+    <p class="del-name" id="delName"></p>
+    <p class="muted">Enter the security code to delete it. This can't be undone.</p>
+    <div class="field">
+      <div class="field-top"><label for="delCode">Security code</label></div>
+      <input id="delCode" name="code" type="password" autocomplete="off" required>
+    </div>
+    <p class="form-error" id="delError" role="alert" hidden></p>
+    <div class="actions">
+      <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn-danger" type="submit" id="delSubmit">Delete project</button>
+    </div>
+  </form>
+</dialog>
 
-      <p class="form-error" id="delError" role="alert" hidden></p>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-      <div class="actions">
-        <button class="btn btn-ghost" type="button" data-close>Cancel</button>
-        <button class="btn btn-danger" type="submit" id="delSubmit">Delete project</button>
-      </div>
-    </form>
-  </dialog>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
