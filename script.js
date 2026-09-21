@@ -1,26 +1,26 @@
 "use strict";
 
-/* =====================================================
-   1) Paste your Supabase details here
-   Supabase Dashboard > Project Settings > API
-   ===================================================== */
-const SUPABASE_URL = "https://kuvbvldmpjqafbvtuwqa.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1dmJ2bGRtcGpxYWZidnR1d3FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NDg0MzIsImV4cCI6MjEwNTUyNDQzMn0.lG0S-kGOxKOjdaZ-pw6I5C4qb_FQOv09xiiw2R4kxdA";
-/* The anon key is meant to be public. Security comes from the
-   database rules in supabase-setup.sql, not from hiding this key. */
-
+/* Supabase details live in config.js (paste your key there). */
+const CFG = window.APP_CONFIG || {};
 const configured =
-  !SUPABASE_URL.includes("PASTE_") && !SUPABASE_ANON_KEY.includes("PASTE_");
+  !!CFG.SUPABASE_URL &&
+  !!CFG.SUPABASE_ANON_KEY &&
+  !CFG.SUPABASE_URL.includes("PASTE_") &&
+  !CFG.SUPABASE_ANON_KEY.includes("PASTE_");
 const sb = configured
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  ? window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY)
   : null;
 
 /* ---------- elements ---------- */
 const $ = (id) => document.getElementById(id);
 const grid = $("grid");
 const empty = $("empty");
+const noMatch = $("noMatch");
+const toolbar = $("toolbar");
 const countEl = $("count");
 const notice = $("setupNotice");
+const searchInput = $("search");
+const tagWrap = $("tagFilters");
 const addDialog = $("addDialog");
 const addForm = $("addForm");
 const addError = $("addError");
@@ -32,63 +32,90 @@ const deleteSubmit = $("delSubmit");
 const delName = $("delName");
 const toastEl = $("toast");
 
+let allProjects = [];
+let query = "";
+let activeTag = "";
 let deleteId = null;
 let toastTimer = null;
 
-/* ---------- helpers ---------- */
+/* =====================================================
+   Theme (light / dark)
+   ===================================================== */
+const root = document.documentElement;
+const themeBtn = $("themeToggle");
+const metaTheme = $("metaTheme");
+
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  themeBtn.setAttribute(
+    "aria-label",
+    theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+  );
+  if (metaTheme) metaTheme.setAttribute("content", theme === "dark" ? "#0C111C" : "#F6F7F9");
+}
+
+themeBtn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+});
+
+applyTheme(root.getAttribute("data-theme") || "light");
+
+// Follow the device setting until the visitor picks a theme themselves
+try {
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+    if (!localStorage.getItem("theme")) applyTheme(e.matches ? "dark" : "light");
+  });
+} catch (e) {}
+
+$("year").textContent = new Date().getFullYear();
+
+/* =====================================================
+   Helpers
+   ===================================================== */
 function toast(message) {
   toastEl.textContent = message;
   toastEl.hidden = false;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => (toastEl.hidden = true), 3200);
 }
+function showError(el, message) { el.textContent = message; el.hidden = false; }
+function clearError(el) { el.textContent = ""; el.hidden = true; }
 
-function showError(el, message) {
-  el.textContent = message;
-  el.hidden = false;
-}
-
-function clearError(el) {
-  el.textContent = "";
-  el.hidden = true;
-}
-
-// Only allow real http/https links
+// Only real http/https links are allowed
 function safeUrl(value) {
   if (!value) return null;
   try {
     const u = new URL(value);
     return u.protocol === "http:" || u.protocol === "https:" ? u.href : null;
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
-
-// Turn "example.com" into "https://example.com". Returns null if empty, false if invalid.
+// "example.com" -> "https://example.com". null = empty, false = invalid.
 function normalizeUrl(value) {
   const v = (value || "").trim();
   if (!v) return null;
   const withProtocol = /^https?:\/\//i.test(v) ? v : "https://" + v;
   return safeUrl(withProtocol) || false;
 }
-
 function parseTags(value) {
-  return (value || "")
-    .split(",")
-    .map((t) => t.trim().slice(0, 20))
-    .filter(Boolean)
-    .slice(0, 6);
+  return (value || "").split(",").map((t) => t.trim().slice(0, 20)).filter(Boolean).slice(0, 6);
 }
-
 function formatDate(iso) {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+}
+function hueFor(text) {
+  let h = 0;
+  for (const ch of text) h = (h * 31 + ch.charCodeAt(0)) % 360;
+  return h;
+}
+function initialsFor(title) {
+  return title.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 }
 
-/* ---------- rendering ---------- */
+/* =====================================================
+   Rendering
+   ===================================================== */
 function showSkeletons() {
   grid.setAttribute("aria-busy", "true");
   grid.innerHTML = "";
@@ -97,6 +124,15 @@ function showSkeletons() {
     s.className = "card skeleton";
     grid.appendChild(s);
   }
+}
+
+function makeTile(title) {
+  const tile = document.createElement("div");
+  tile.className = "card-tile";
+  tile.style.setProperty("--h", hueFor(title));
+  tile.setAttribute("aria-hidden", "true");
+  tile.textContent = initialsFor(title);
+  return tile;
 }
 
 function makeLink(label, href, primary) {
@@ -113,16 +149,18 @@ function renderCard(p) {
   const card = document.createElement("article");
   card.className = "card";
 
-  const img = safeUrl(p.image_url);
-  if (img) {
+  const imgUrl = safeUrl(p.image_url);
+  if (imgUrl) {
     const im = document.createElement("img");
     im.className = "card-img";
-    im.src = img;
+    im.src = imgUrl;
     im.alt = "";
     im.loading = "lazy";
     im.referrerPolicy = "no-referrer";
-    im.addEventListener("error", () => im.remove());
+    im.addEventListener("error", () => im.replaceWith(makeTile(p.title)));
     card.appendChild(im);
+  } else {
+    card.appendChild(makeTile(p.title));
   }
 
   const body = document.createElement("div");
@@ -168,6 +206,7 @@ function renderCard(p) {
   del.type = "button";
   del.className = "link-delete";
   del.textContent = "Delete";
+  del.setAttribute("aria-label", "Delete " + p.title);
   del.addEventListener("click", () => openDelete(p));
   foot.append(date, del);
   card.appendChild(foot);
@@ -175,29 +214,74 @@ function renderCard(p) {
   return card;
 }
 
-function render(projects) {
-  grid.innerHTML = "";
+function renderTagChips() {
+  const tags = [...new Set(allProjects.flatMap((p) => p.tags || []))].sort((a, b) =>
+    a.localeCompare(b)
+  );
+  if (activeTag && !tags.includes(activeTag)) activeTag = "";
+  tagWrap.innerHTML = "";
+  if (!tags.length) return;
+
+  const make = (label, value) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.textContent = label;
+    b.setAttribute("aria-pressed", String(activeTag === value));
+    b.addEventListener("click", () => {
+      activeTag = value;
+      renderTagChips();
+      applyFilters();
+    });
+    return b;
+  };
+  tagWrap.appendChild(make("All", ""));
+  tags.forEach((t) => tagWrap.appendChild(make(t, t)));
+}
+
+function applyFilters() {
   grid.setAttribute("aria-busy", "false");
 
-  if (!projects.length) {
+  if (!allProjects.length) {
+    grid.innerHTML = "";
+    toolbar.hidden = true;
+    noMatch.hidden = true;
     empty.hidden = false;
-    countEl.textContent = "";
     return;
   }
   empty.hidden = true;
-  countEl.textContent =
-    projects.length + (projects.length === 1 ? " project" : " projects");
-  projects.forEach((p) => grid.appendChild(renderCard(p)));
+  toolbar.hidden = false;
+
+  const q = query.trim().toLowerCase();
+  const list = allProjects.filter((p) => {
+    const tagOk = !activeTag || (p.tags || []).includes(activeTag);
+    const hay = (p.title + " " + (p.description || "") + " " + (p.tags || []).join(" ")).toLowerCase();
+    return tagOk && (!q || hay.includes(q));
+  });
+
+  grid.innerHTML = "";
+  list.forEach((p) => grid.appendChild(renderCard(p)));
+  noMatch.hidden = list.length > 0;
+
+  const total = allProjects.length;
+  const noun = total === 1 ? "project" : "projects";
+  countEl.textContent = list.length === total ? total + " " + noun : list.length + " of " + total + " " + noun;
 }
 
-/* ---------- data ---------- */
+searchInput.addEventListener("input", () => {
+  query = searchInput.value;
+  applyFilters();
+});
+
+/* =====================================================
+   Data
+   ===================================================== */
 async function loadProjects() {
   if (!configured) {
     grid.innerHTML = "";
     grid.setAttribute("aria-busy", "false");
     notice.hidden = false;
-    notice.textContent =
-      "Setup needed: open script.js and paste your Supabase URL and anon key.";
+    notice.textContent = "Setup needed: open config.js and paste your Supabase anon key.";
     return;
   }
   const { data, error } = await sb
@@ -210,17 +294,21 @@ async function loadProjects() {
     grid.setAttribute("aria-busy", "false");
     notice.hidden = false;
     notice.textContent =
-      "Could not load projects. Check your Supabase URL, key and that supabase-setup.sql was run.";
+      "Could not load projects. Check config.js (URL and key) and that supabase-setup.sql was run.";
     return;
   }
   notice.hidden = true;
-  render(data || []);
+  allProjects = data || [];
+  renderTagChips();
+  applyFilters();
 }
 
-/* ---------- add ---------- */
+/* =====================================================
+   Add (needs security code)
+   ===================================================== */
 function openAdd() {
   if (!configured) {
-    toast("Add your Supabase details in script.js first.");
+    toast("Add your Supabase key in config.js first.");
     return;
   }
   clearError(addError);
@@ -274,7 +362,9 @@ addForm.addEventListener("submit", async (e) => {
   loadProjects();
 });
 
-/* ---------- delete ---------- */
+/* =====================================================
+   Delete (needs security code)
+   ===================================================== */
 function openDelete(project) {
   deleteId = project.id;
   delName.textContent = project.title;
@@ -293,10 +383,7 @@ deleteForm.addEventListener("submit", async (e) => {
   deleteSubmit.disabled = true;
   deleteSubmit.textContent = "Deleting...";
 
-  const { data, error } = await sb.rpc("delete_project", {
-    p_id: deleteId,
-    p_code: code,
-  });
+  const { data, error } = await sb.rpc("delete_project", { p_id: deleteId, p_code: code });
 
   deleteSubmit.disabled = false;
   deleteSubmit.textContent = "Delete project";
@@ -313,7 +400,9 @@ deleteForm.addEventListener("submit", async (e) => {
   loadProjects();
 });
 
-/* ---------- dialog close behaviour ---------- */
+/* =====================================================
+   Dialog close behaviour
+   ===================================================== */
 [addDialog, deleteDialog].forEach((dlg) => {
   dlg.addEventListener("click", (e) => {
     if (e.target === dlg || e.target.hasAttribute("data-close")) dlg.close();
@@ -325,7 +414,9 @@ deleteForm.addEventListener("submit", async (e) => {
   });
 });
 
-/* ---------- start ---------- */
+/* =====================================================
+   Start
+   ===================================================== */
 $("openAdd").addEventListener("click", openAdd);
 $("emptyAdd").addEventListener("click", openAdd);
 
