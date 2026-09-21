@@ -1,623 +1,257 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Projects preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FR Foundry · Projects by Fazley Rabbi</title>
+<meta name="description" content="Live demos and source code for projects built by Fazley Rabbi.">
+<meta name="theme-color" content="#F2F5FB" id="metaTheme">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="logo.png">
+
+<!-- Apply saved theme before first paint (no flash) -->
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("theme");
+    if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+    var m = document.getElementById("metaTheme");
+    if (m) m.setAttribute("content", t === "dark" ? "#060A15" : "#F2F5FB");
+  } catch (e) {}
+})();
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root {
-  color-scheme: dark;
-  --bg: #070B16;
-  --surface: #0D1324;
-  --surface-2: #141C33;
-  --line: #1D2745;
-  --ink: #E8ECF6;
-  --muted: #8D99B3;
-  --navy: #06101F;
-  --grad: linear-gradient(135deg, #3B82F6, #22D3EE 60%, #34D399);
-  --font: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}
-*, *::before, *::after { box-sizing: border-box; }
-body {
-  margin: 0; background: var(--bg); color: var(--ink);
-  font-family: var(--font); line-height: 1.55; min-height: 100vh;
-  background-image: radial-gradient(900px 420px at 12% -8%, rgba(59,130,246,.16), transparent 70%),
-                    radial-gradient(700px 380px at 100% 0%, rgba(52,211,153,.09), transparent 70%);
-  background-repeat: no-repeat;
-  -webkit-font-smoothing: antialiased;
-}
-.wrap { width: 100%; max-width: 1180px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 32px); }
-:focus-visible { outline: 2px solid #22D3EE; outline-offset: 3px; border-radius: 8px; }
-
-/* top bar */
-.topbar { position: sticky; top: 0; z-index: 10; background: rgba(7,11,22,.78); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
-.topbar-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 68px; }
-.brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; min-width: 0; }
-.brand svg { width: 40px; height: 40px; flex: none; display: block; }
-.brand-text { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
-.brand-name { font-weight: 800; font-size: 1.02rem; letter-spacing: -.01em; white-space: nowrap; }
-.brand-sub { font-size: .8rem; color: var(--muted); font-weight: 500; }
-
-.btn { font: inherit; font-weight: 700; font-size: .92rem; min-height: 42px; padding: 0 18px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
-.btn:hover { border-color: #2C3960; }
-.btn-grad { background: var(--grad); color: var(--navy); border-color: transparent; }
-.btn-grad:hover { filter: brightness(1.08); border-color: transparent; }
-.btn-sm { min-height: 38px; padding: 0 14px; font-size: .86rem; }
-
-/* page head */
-.head { padding-block: clamp(32px, 6vw, 56px) 8px; }
-.head h1 { margin: 0; font-size: clamp(1.9rem, 4.6vw, 2.7rem); font-weight: 800; letter-spacing: -.025em; line-height: 1.1; }
-.head-sub { margin: 8px 0 0; color: var(--muted); font-size: 1.02rem; font-weight: 500; }
-
-/* toolbar */
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding-block: 22px 26px; }
-.search { position: relative; flex: 1 1 320px; min-width: min(100%, 300px); max-width: 420px; }
-.search svg { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-.search input { font: inherit; width: 100%; min-height: 46px; padding: 0 48px 0 44px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
-.search input::placeholder { color: var(--muted); }
-.search input:focus { outline: 2px solid #22D3EE; outline-offset: 1px; }
-.search kbd { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font: 700 .74rem var(--font); color: var(--muted); border: 1px solid var(--line); background: var(--surface-2); border-radius: 6px; padding: 1px 7px; }
-.count { margin: 0 0 0 auto; color: var(--muted); font-weight: 700; font-size: .92rem; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { font: inherit; font-weight: 700; font-size: .9rem; min-height: 40px; padding: 0 8px 0 14px; display: inline-flex; align-items: center; gap: 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
-.chip:hover { border-color: #2C3960; }
-.chip-n { min-width: 24px; height: 24px; padding: 0 7px; display: inline-grid; place-items: center; border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: .78rem; font-weight: 800; }
-.chip[aria-pressed="true"] { background: var(--ink); color: var(--navy); border-color: var(--ink); }
-.chip[aria-pressed="true"] .chip-n { background: rgba(6,16,31,.14); color: var(--navy); }
-
-/* grid + cards */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 24px; padding-bottom: 72px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
-.card:hover { border-color: #2C3960; }
-.art { aspect-ratio: 16 / 10; width: 100%; border-bottom: 1px solid var(--line); position: relative; overflow: hidden; background: var(--surface-2); }
-.art svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.badge { position: absolute; top: 12px; left: 12px; z-index: 1; font-size: .74rem; font-weight: 800; padding: 3px 11px; border-radius: 999px; background: var(--grad); color: var(--navy); }
-.body { padding: 20px 20px 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-.body h3 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -.01em; line-height: 1.25; overflow-wrap: anywhere; }
-.body p { margin: 0; color: var(--muted); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: .95rem; }
-.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.tags li { font-size: .78rem; font-weight: 700; color: var(--muted); background: var(--surface-2); border-radius: 999px; padding: 2px 11px; }
-.links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 4px; }
-.foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 20px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
-.del { font: inherit; font-weight: 700; color: var(--muted); background: none; border: 0; min-height: 40px; cursor: pointer; padding: 0 2px; }
-.del:hover { color: #FF8A8A; text-decoration: underline; text-underline-offset: 3px; }
-
-.empty { text-align: center; border: 1px dashed var(--line); border-radius: 18px; padding: clamp(32px, 6vw, 60px) 20px; margin-bottom: 72px; }
-.empty h2 { margin: 0 0 6px; font-size: 1.4rem; font-weight: 800; }
-.empty p { margin: 0 0 18px; color: var(--muted); }
-
-.note { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 16px; color: var(--muted); font-size: .9rem; margin-top: 22px; }
-
-@media (hover: none) { .search kbd { display: none; } }
-.search input:not(:placeholder-shown) ~ kbd { display: none; }
-@media (max-width: 520px) { .count { margin-left: 0; } .brand-sub { display: none; } .search { max-width: none; flex-basis: 100%; } }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="topbar">
-  <div class="wrap topbar-in">
-    <a class="brand" href="./" aria-label="Md Fazley Rabbi, home">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Fazley Rabbi">
+<!-- Shared SVG sprite: FR Foundry logo mark -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <linearGradient id="fr-g" x1="4" y1="2" x2="44" y2="46" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#3B82F6"/>
-      <stop offset=".55" stop-color="#22D3EE"/>
-      <stop offset="1" stop-color="#34D399"/>
-    </linearGradient>
+<linearGradient id="lgt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FF7DA"/><stop offset="1" stop-color="#3FD9F2"/></linearGradient>
+<linearGradient id="lgl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B62FF"/><stop offset="1" stop-color="#1A33C4"/></linearGradient>
+<linearGradient id="lgr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12C7DA"/><stop offset="1" stop-color="#0A8F9A"/></linearGradient>
+<linearGradient id="lgct" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4FFFC"/><stop offset="1" stop-color="#B6FBEA"/></linearGradient>
+<linearGradient id="lgcl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6BE8F7"/><stop offset="1" stop-color="#2BB6E0"/></linearGradient>
+<linearGradient id="lgcr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2BE0B0"/><stop offset="1" stop-color="#10A88A"/></linearGradient>
   </defs>
-  <rect width="48" height="48" rx="13" fill="url(#fr-g)"/>
-  <rect x=".5" y=".5" width="47" height="47" rx="12.5" fill="none" stroke="#fff" stroke-opacity=".28"/>
-  <g fill="none" stroke="#06101F" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M11.5 34V14.5H22.5"/>
-    <path d="M11.5 24.2H20.5"/>
-    <path d="M27.5 34V14.5H32.3a4.9 4.9 0 0 1 0 9.7H27.5"/>
-    <path d="M32.6 24.4 37.6 34"/>
-  </g>
+  <symbol id="logo-mark" viewBox="0 0 100 100">
+<g stroke="rgba(255,255,255,.4)" stroke-width=".8" stroke-linejoin="round">
+<polygon points="16,36 50,55.6 50,85.6 16,66" fill="url(#lgl)"/>
+<polygon points="84,36 84,66 50,85.6 50,55.6" fill="url(#lgr)"/>
+<polygon points="50,16.4 84,36 50,55.6 16,36" fill="url(#lgt)"/>
+<g style="transform:translateY(var(--cap-lift,0px));transition:transform .25s cubic-bezier(.2,.8,.2,1)">
+<polygon points="38,22 50,28.9 50,42.9 38,36" fill="url(#lgcl)"/>
+<polygon points="62,22 62,36 50,42.9 50,28.9" fill="url(#lgcr)"/>
+<polygon points="50,15.1 62,22 50,28.9 38,22" fill="url(#lgct)"/>
+</g></g>
+  </symbol>
 </svg>
 
-      <span class="brand-text">
-        <span class="brand-name">Md Fazley Rabbi</span>
-        <span class="brand-sub">Project showcase</span>
-      </span>
+<a class="skip" href="#projects">Skip to projects</a>
+<div class="bg" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="./" aria-label="FR Foundry, home">
+      <span class="brand-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo-mark"/></svg></span>
+      <span class="brand-name">FR Foundry</span>
     </a>
-    <button class="btn btn-grad" type="button">Add project</button>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <button class="btn btn-primary" id="openAdd" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Add project</span>
+      </button>
+    </div>
   </div>
 </header>
 
-<main class="wrap">
-  <section class="head">
-    <h1 id="viewTitle">All projects</h1>
-    <p class="head-sub">Everything I've built, ready to open.</p>
-    <p class="note">Preview only. Titles in the first row are your three current projects; the rest are sample data so you can see more colours and styles.</p>
+<main>
+  <section class="hero" id="hero">
+    <div class="floor" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1>Everything I've built, ready to open.</h1>
+        <p class="hero-sub">Live demos, source code and experiments by Fazley Rabbi. Pick a project to try it, or read how it works.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#projects">Browse projects</a>
+          <button class="btn btn-lg" type="button" data-open-add>Add project</button>
+        </div>
+      </div>
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="scene" id="scene"></div>
+      </div>
+    </div>
   </section>
 
-  <div class="toolbar">
-    <label class="search">
-      <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search projects</span>
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="Search by name, description or tag" autocomplete="off">
-      <kbd aria-hidden="true">/</kbd>
-    </label>
-    <div class="chips" id="chips" role="group" aria-label="Filter by tag"></div>
-    <p class="count" id="viewSub" aria-live="polite"></p>
-  </div>
+  <section class="wrap projects" id="projects" aria-labelledby="projectsTitle">
+    <div id="setupNotice" class="notice" hidden></div>
 
-  <section class="grid" id="grid"></section>
+    <div class="section-head">
+      <div>
+        <h2 id="projectsTitle">All projects <span class="pill" id="countPill">0</span></h2>
+        <p class="range" id="rangeText" aria-live="polite"></p>
+      </div>
+    </div>
 
-  <div class="empty" id="empty" hidden>
-    <h2>No projects found</h2>
-    <p id="emptyMsg"></p>
-    <button class="btn" id="clear" type="button">Clear search and filter</button>
-  </div>
+    <div class="toolbar" id="toolbar" hidden>
+      <label class="search">
+        <span class="visually-hidden">Search projects</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search" type="search" placeholder="Search by name, description or tag" autocomplete="off">
+        <kbd aria-hidden="true">/</kbd>
+      </label>
+      <div class="chips" id="tagFilters" role="group" aria-label="Filter by tag"></div>
+    </div>
+
+    <div id="grid" class="grid" aria-busy="true"></div>
+
+    <nav class="pager" id="pager" aria-label="Pagination" hidden></nav>
+
+    <div id="noMatch" class="empty" hidden>
+      <h3>No matching projects</h3>
+      <p id="noMatchText">Try a different word, or clear the tag filter.</p>
+      <button class="btn" id="clearFilters" type="button">Clear search and filters</button>
+    </div>
+
+    <div id="empty" class="empty" hidden>
+      <h3>No projects yet</h3>
+      <p>Add your first project and it will appear here on every device.</p>
+      <button class="btn btn-primary" data-open-add type="button">Add project</button>
+    </div>
+
+    <div id="errorState" class="empty" hidden>
+      <h3>Couldn't load projects</h3>
+      <p id="errorText"></p>
+      <button class="btn" id="retryBtn" type="button">Try again</button>
+    </div>
+  </section>
 </main>
 
-<script>
-/*!
- * card-art.js
- * Generates a unique piece of card artwork for each project, as an SVG string.
- * Same project name -> same artwork every time. Different names -> different
- * style (4 styles) and colour palette (8 palettes).
- *
- * Usage:
- *   CardArt.svg('cityfic')                       // returns "<svg ...>" string
- *   CardArt.svg(project.id, { label: 'CI' })     // seed by id, custom label
- *   CardArt.dataUri('cityfic')                   // for <img src="...">
- *   CardArt.mount(element, 'cityfic')            // sets element.innerHTML
- *
- * Tip: seed with a stable value (project id) so artwork never changes when the
- * project is renamed. Seed with the title if you want it to follow the name.
- */
-(function (root) {
-  'use strict';
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark small"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo-mark"/></svg></span>
+      <p class="copyright">&copy; <span id="year"></span> Fazley Rabbi</p>
+    </div>
+    <ul class="social" aria-label="Social links">
+      <li>
+        <a href="https://www.linkedin.com/in/fazleyrabbi1067/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/rabbi1067" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://x.com/FazleRabbi56251" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" title="X">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.facebook.com/fazleyrabbi1067/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.5-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
+        </a>
+      </li>
+    </ul>
+  </div>
+</footer>
 
-  var W = 400, H = 250;
+<!-- Add project dialog -->
+<dialog id="addDialog" aria-labelledby="addTitle">
+  <div class="dlg">
+    <form id="addForm" class="dlg-form" novalidate>
+      <div class="dlg-head">
+        <h2 id="addTitle">Add project</h2>
+        <button class="icon-btn icon-btn-sm" type="button" data-close aria-label="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
 
-  // base hue, and how far the second colour of the gradient drifts from it
-  var PALETTES = [
-    { name: 'ocean',   h: 214, s:  32 },
-    { name: 'lagoon',  h: 186, s: -28 },
-    { name: 'emerald', h: 152, s:  34 },
-    { name: 'lime',    h: 112, s: -40 },
-    { name: 'amber',   h:  36, s:  20 },
-    { name: 'rose',    h: 348, s:  26 },
-    { name: 'orchid',  h: 300, s: -34 },
-    { name: 'violet',  h: 262, s:  34 }
-  ];
+      <div class="field">
+        <div class="field-top"><label for="f-title">Project name</label><small id="titleCount">0/50</small></div>
+        <input id="f-title" name="title" type="text" maxlength="50" autocomplete="off" required aria-describedby="err-title">
+        <p class="field-error" id="err-title" hidden></p>
+      </div>
 
-  var STYLE_NAMES = ['city', 'layers', 'orbit', 'ridges'];
+      <div class="field">
+        <div class="field-top"><label for="f-desc">Description <em>Optional</em></label><small id="descCount">0/100 words</small></div>
+        <textarea id="f-desc" name="description" rows="3" maxlength="800" aria-describedby="err-description"></textarea>
+        <p class="field-error" id="err-description" hidden></p>
+      </div>
 
-  /* ---------- helpers ---------- */
+      <div class="row">
+        <div class="field">
+          <div class="field-top"><label for="f-repo">GitHub link</label></div>
+          <input id="f-repo" name="repo_url" type="url" inputmode="url" placeholder="https://github.com/username/repo" autocomplete="off" required aria-describedby="err-repo_url">
+          <p class="field-error" id="err-repo_url" hidden></p>
+        </div>
+        <div class="field">
+          <div class="field-top"><label for="f-live">Live link <em>Optional</em></label></div>
+          <input id="f-live" name="live_url" type="url" inputmode="url" placeholder="https://" autocomplete="off" aria-describedby="err-live_url">
+          <p class="field-error" id="err-live_url" hidden></p>
+        </div>
+      </div>
 
-  function hash(str) {
-    var h = 2166136261 >>> 0;
-    str = String(str);
-    for (var i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    h ^= h >>> 13; h = Math.imul(h, 0x85ebca6b);
-    h ^= h >>> 16;
-    return h >>> 0;
-  }
+      <div class="field">
+        <div class="field-top"><label for="f-tags">Tags <em>Optional, separate with commas</em></label></div>
+        <input id="f-tags" name="tags" type="text" placeholder="html, css, supabase" autocomplete="off" aria-describedby="err-tags">
+        <p class="field-error" id="err-tags" hidden></p>
+      </div>
 
-  function rng(seed) {
-    var a = seed >>> 0;
-    return function () {
-      a = (a + 0x6D2B79F5) >>> 0;
-      var t = a;
-      t = Math.imul(t ^ (t >>> 15), t | 1);
-      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
+      <div class="field">
+        <div class="field-top"><label for="f-code">Security code</label></div>
+        <input id="f-code" name="code" type="password" autocomplete="off" required aria-describedby="err-code">
+        <p class="field-error" id="err-code" hidden></p>
+      </div>
 
-  function hsl(h, s, l, a) {
-    h = ((h % 360) + 360) % 360;
-    return a == null
-      ? 'hsl(' + h.toFixed(0) + ' ' + s + '% ' + l + '%)'
-      : 'hsl(' + h.toFixed(0) + ' ' + s + '% ' + l + '% / ' + a + ')';
-  }
+      <p class="form-error" id="addError" role="alert" hidden></p>
 
-  function n(v) { return Math.round(v * 10) / 10; }
+      <div class="actions">
+        <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+        <button class="btn btn-primary" type="submit" id="addSubmit">Add project</button>
+      </div>
+    </form>
 
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
+    <aside class="dlg-preview" aria-label="Cover preview">
+      <div class="preview-media" id="coverPreview"></div>
+      <p class="hint">The cover is generated from the project name. Change the name and it changes with it.</p>
+    </aside>
+  </div>
+</dialog>
 
-  function initials(title) {
-    var words = String(title || '').trim().split(/[\s\-_.]+/).filter(Boolean);
-    if (!words.length) return '\u2022';
-    if (words.length > 1) return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
-    return words[0].slice(0, 2).toUpperCase();
-  }
+<!-- Delete dialog -->
+<dialog id="deleteDialog" aria-labelledby="delTitle" class="dlg-small">
+  <form id="deleteForm" class="dlg-form" novalidate>
+    <h2 id="delTitle">Delete this project?</h2>
+    <p class="del-name" id="delName"></p>
+    <p class="muted">Enter the security code to delete it. This can't be undone.</p>
+    <div class="field">
+      <div class="field-top"><label for="delCode">Security code</label></div>
+      <input id="delCode" name="code" type="password" autocomplete="off" required>
+    </div>
+    <p class="form-error" id="delError" role="alert" hidden></p>
+    <div class="actions">
+      <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn-danger" type="submit" id="delSubmit">Delete project</button>
+    </div>
+  </form>
+</dialog>
 
-  function tones(p) {
-    var h = p.h, h2 = p.h + p.s;
-    return {
-      h: h, h2: h2,
-      top:   hsl(h2, 88, 70),
-      left:  hsl(h, 80, 54),
-      right: hsl(h2, 68, 40),
-      edge:  hsl(h2, 95, 84),
-      glow:  hsl(h2, 90, 60),
-      bgA:   hsl(h, 58, 16),
-      bgB:   hsl(h2, 52, 8),
-      ink:   hsl(h, 65, 12),
-      plate: hsl(h, 32, 20),
-      plateSide: hsl(h, 32, 13),
-      grid:  hsl(h, 40, 34)
-    };
-  }
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  function sparkles(r, t, count, yMax) {
-    var out = '';
-    for (var i = 0; i < count; i++) {
-      var x = 14 + r() * (W - 28);
-      var y = 12 + r() * yMax;
-      var s = 2 + r() * 2.6;
-      var col = r() > 0.5 ? t.top : t.glow;
-      out += '<path d="M' + n(x) + ' ' + n(y - s) + 'L' + n(x + s) + ' ' + n(y) +
-             'L' + n(x) + ' ' + n(y + s) + 'L' + n(x - s) + ' ' + n(y) + 'Z" fill="' + col +
-             '" opacity="' + n(0.45 + r() * 0.5) + '"/>';
-    }
-    return out;
-  }
-
-  function poly(pts, fill, stroke, sw) {
-    var d = '';
-    for (var i = 0; i < pts.length; i++) d += (i ? 'L' : 'M') + n(pts[i][0]) + ' ' + n(pts[i][1]);
-    return '<path d="' + d + 'Z" fill="' + fill + '"' +
-           (stroke ? ' stroke="' + stroke + '" stroke-width="' + (sw || 0.8) + '" stroke-linejoin="round"' : '') + '/>';
-  }
-
-  /* isometric projection: grid (x, y, z) -> screen [sx, sy] */
-  function makeIso(ox, oy, u) {
-    return function (x, y, z) {
-      return [ox + (x - y) * u * 0.866, oy + (x + y) * u * 0.5 - z * u];
-    };
-  }
-
-  function cuboid(P, x, y, z0, w, d, h, c) {
-    var z1 = z0 + h;
-    var left  = [P(x, y + d, z0), P(x + w, y + d, z0), P(x + w, y + d, z1), P(x, y + d, z1)];
-    var right = [P(x + w, y, z0), P(x + w, y + d, z0), P(x + w, y + d, z1), P(x + w, y, z1)];
-    var top   = [P(x, y, z1), P(x + w, y, z1), P(x + w, y + d, z1), P(x, y + d, z1)];
-    return poly(left, c.left) + poly(right, c.right) + poly(top, c.top, c.edge, 0.7);
-  }
-
-  /* text lying flat on an isometric top face */
-  function isoLabel(P, cx, cy, z, label, size, color, u) {
-    var p = P(cx, cy, z);
-    return '<text transform="translate(' + n(p[0]) + ' ' + n(p[1]) + ') matrix(0.866 0.5 -0.866 0.5 0 0)" ' +
-           'text-anchor="middle" dominant-baseline="central" font-family="Manrope, system-ui, sans-serif" ' +
-           'font-weight="800" font-size="' + size + '" fill="' + color + '" letter-spacing="1">' + esc(label) + '</text>';
-  }
-
-  function shuffle(arr, r) {
-    for (var i = arr.length - 1; i > 0; i--) {
-      var j = Math.floor(r() * (i + 1));
-      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-    }
-    return arr;
-  }
-
-  function open(id, t, extraDefs) {
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' +
-      '<defs>' +
-        '<linearGradient id="' + id + 'bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + t.bgA + '"/><stop offset="1" stop-color="' + t.bgB + '"/></linearGradient>' +
-        '<radialGradient id="' + id + 'gl" cx="50%" cy="74%" r="55%"><stop offset="0" stop-color="' + t.glow + '" stop-opacity=".32"/><stop offset="1" stop-color="' + t.glow + '" stop-opacity="0"/></radialGradient>' +
-        (extraDefs || '') +
-      '</defs>' +
-      '<rect width="' + W + '" height="' + H + '" fill="url(#' + id + 'bg)"/>' +
-      '<rect width="' + W + '" height="' + H + '" fill="url(#' + id + 'gl)"/>';
-  }
-
-  /* ---------- style 0: city (isometric blocks on a plate) ---------- */
-
-  function styleCity(id, t, r, label) {
-    var u = 27, P = makeIso(200, 66, u), s = open(id, t) + sparkles(r, t, 7, 70);
-    var N = 5;
-
-    // plate
-    s += cuboid(P, 0, 0, -0.28, N, N, 0.28, { left: t.plateSide, right: t.plateSide, top: t.plate, edge: t.grid });
-    for (var i = 1; i < N; i++) {
-      s += '<path d="M' + n(P(i, 0, 0)[0]) + ' ' + n(P(i, 0, 0)[1]) + 'L' + n(P(i, N, 0)[0]) + ' ' + n(P(i, N, 0)[1]) +
-           'M' + n(P(0, i, 0)[0]) + ' ' + n(P(0, i, 0)[1]) + 'L' + n(P(N, i, 0)[0]) + ' ' + n(P(N, i, 0)[1]) +
-           '" stroke="' + t.grid + '" stroke-width=".6" opacity=".55"/>';
-    }
-
-    // blocks around the centre in the outer ring of cells
-    var cells = [];
-    for (var a = 0; a < N; a++) for (var b = 0; b < N; b++) {
-      if (a >= 1 && a <= 3 && b >= 1 && b <= 3) continue;
-      cells.push([a, b]);
-    }
-    shuffle(cells, r);
-    var blocks = [];
-    for (var k = 0; k < 9; k++) {
-      var c = cells[k], front = (c[0] === 4 || c[1] === 4);
-      var size = 0.62 + r() * 0.3;
-      var hgt = front ? 0.35 + r() * 0.6 : 0.5 + r() * 1.7;
-      blocks.push({ x: c[0] + (1 - size) / 2, y: c[1] + (1 - size) / 2, w: size, d: size, h: hgt, z: 0 });
-    }
-    // centre block carries the label
-    var cb = { x: 1.6, y: 1.6, w: 1.8, d: 1.8, h: 1.15 + r() * 0.5, z: 0, main: true };
-    blocks.push(cb);
-    blocks.sort(function (p, q) { return (p.x + p.y + p.w / 2 + p.d / 2) - (q.x + q.y + q.w / 2 + q.d / 2); });
-
-    var cols = { left: t.left, right: t.right, top: t.top, edge: t.edge };
-    for (var m = 0; m < blocks.length; m++) {
-      var bl = blocks[m];
-      s += cuboid(P, bl.x, bl.y, bl.z, bl.w, bl.d, bl.h, cols);
-      if (bl.main) s += isoLabel(P, bl.x + bl.w / 2, bl.y + bl.d / 2, bl.h, label, 22, t.ink, u);
-    }
-    return s + '</svg>';
-  }
-
-  /* ---------- style 1: layers (stacked slabs) ---------- */
-
-  function styleLayers(id, t, r, label) {
-    var u = 26, P = makeIso(200, 104, u), s = open(id, t) + sparkles(r, t, 8, 60);
-    var sizes = [4.3, 3.7, 3.1, 2.5], gap = 0.85, thick = 0.34;
-    var l0 = 26 + Math.floor(r() * 8);
-
-    for (var k = 0; k < sizes.length; k++) {
-      var sz = sizes[k], off = (sizes[0] - sz) / 2, z0 = k * gap;
-      var cols = {
-        top:   hsl(t.h2, 85, l0 + k * 11),
-        left:  hsl(t.h, 78, l0 - 6 + k * 8),
-        right: hsl(t.h2, 68, l0 - 12 + k * 6),
-        edge:  hsl(t.h2, 95, 82)
-      };
-      s += cuboid(P, off, off, z0, sz, sz, thick, cols);
-      if (k === sizes.length - 1) {
-        s += isoLabel(P, off + sz / 2, off + sz / 2, z0 + thick, label, 20, t.ink, u);
-      }
-    }
-    return s + '</svg>';
-  }
-
-  /* ---------- style 2: orbit (rings, planets, glowing core) ---------- */
-
-  function styleOrbit(id, t, r, label) {
-    var cx = 200, cy = 126;
-    var defs =
-      '<pattern id="' + id + 'dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1.1" fill="' + t.edge + '" opacity=".16"/></pattern>' +
-      '<radialGradient id="' + id + 'core" cx="38%" cy="32%" r="80%"><stop offset="0" stop-color="' + t.edge + '"/><stop offset=".55" stop-color="' + t.top + '"/><stop offset="1" stop-color="' + t.left + '"/></radialGradient>' +
-      '<radialGradient id="' + id + 'halo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="' + t.glow + '" stop-opacity=".55"/><stop offset="1" stop-color="' + t.glow + '" stop-opacity="0"/></radialGradient>';
-    var s = open(id, t, defs) + '<rect width="' + W + '" height="' + H + '" fill="url(#' + id + 'dots)"/>';
-    s += sparkles(r, t, 6, 200);
-
-    var tilt = -14 - Math.floor(r() * 12);
-    var radii = [62, 104, 150];
-    s += '<g transform="rotate(' + tilt + ' ' + cx + ' ' + cy + ')">';
-    for (var i = 0; i < radii.length; i++) {
-      var rx = radii[i], ry = rx * 0.4;
-      s += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + n(ry) + '" fill="none" stroke="' + t.edge +
-           '" stroke-width="1" opacity="' + (i === 1 ? 0.45 : 0.22) + '"' + (i === 2 ? ' stroke-dasharray="3 6"' : '') + '/>';
-      var ang = r() * Math.PI * 2, px = cx + rx * Math.cos(ang), py = cy + ry * Math.sin(ang);
-      var pr = 5 + r() * 4;
-      s += '<circle cx="' + n(px) + '" cy="' + n(py) + '" r="' + n(pr * 2.4) + '" fill="url(#' + id + 'halo)"/>' +
-           '<circle cx="' + n(px) + '" cy="' + n(py) + '" r="' + n(pr) + '" fill="' + (i % 2 ? t.top : t.left) + '" stroke="' + t.edge + '" stroke-width=".8"/>';
-      if (i === 0 && r() > 0.35) {
-        var a2 = ang + Math.PI * (0.8 + r() * 0.4);
-        s += '<circle cx="' + n(cx + rx * Math.cos(a2)) + '" cy="' + n(cy + ry * Math.sin(a2)) + '" r="3" fill="' + t.edge + '" opacity=".9"/>';
-      }
-    }
-    s += '</g>';
-
-    s += '<circle cx="' + cx + '" cy="' + cy + '" r="64" fill="url(#' + id + 'halo)"/>' +
-         '<circle cx="' + cx + '" cy="' + cy + '" r="31" fill="url(#' + id + 'core)" stroke="' + t.edge + '" stroke-width="1" stroke-opacity=".6"/>' +
-         '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="central" font-family="Manrope, system-ui, sans-serif" font-weight="800" font-size="22" fill="' + t.ink + '" letter-spacing="1">' + esc(label) + '</text>';
-    return s + '</svg>';
-  }
-
-  /* ---------- style 3: ridges (layered horizon and sun) ---------- */
-
-  function ridgePath(r, baseY, amp, steps) {
-    var pts = [], i;
-    for (i = 0; i <= steps; i++) pts.push([i * (W / steps), baseY - r() * amp]);
-    var d = 'M0 ' + n(pts[0][1]);
-    for (i = 0; i < pts.length - 1; i++) {
-      var mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
-      d += 'Q' + n(pts[i][0]) + ' ' + n(pts[i][1]) + ' ' + n(mx) + ' ' + n(my);
-    }
-    d += 'L' + W + ' ' + n(pts[pts.length - 1][1]) + 'L' + W + ' ' + H + 'L0 ' + H + 'Z';
-    return d;
-  }
-
-  function styleRidges(id, t, r, label) {
-    var defs =
-      '<radialGradient id="' + id + 'sun" cx="40%" cy="35%" r="80%"><stop offset="0" stop-color="' + t.edge + '"/><stop offset="1" stop-color="' + t.top + '"/></radialGradient>' +
-      '<radialGradient id="' + id + 'halo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="' + t.glow + '" stop-opacity=".6"/><stop offset="1" stop-color="' + t.glow + '" stop-opacity="0"/></radialGradient>';
-    var s = open(id, t, defs) + sparkles(r, t, 9, 90);
-
-    var sx = 90 + r() * 220, sy = 74 + r() * 16;
-    s += '<circle cx="' + n(sx) + '" cy="' + n(sy) + '" r="78" fill="url(#' + id + 'halo)"/>' +
-         '<circle cx="' + n(sx) + '" cy="' + n(sy) + '" r="35" fill="url(#' + id + 'sun)"/>' +
-         '<text x="' + n(sx) + '" y="' + n(sy) + '" text-anchor="middle" dominant-baseline="central" font-family="Manrope, system-ui, sans-serif" font-weight="800" font-size="24" fill="' + t.ink + '" letter-spacing="1">' + esc(label) + '</text>';
-
-    var layers = [
-      { y: 150, amp: 46, fill: hsl(t.h2, 68, 50, 0.5), steps: 6 },
-      { y: 178, amp: 40, fill: hsl(t.h, 58, 32, 0.85),  steps: 7 },
-      { y: 204, amp: 34, fill: hsl(t.h, 52, 22),        steps: 8 },
-      { y: 232, amp: 26, fill: hsl(t.h, 48, 13),        steps: 9 }
-    ];
-    for (var i = 0; i < layers.length; i++) {
-      s += '<path d="' + ridgePath(r, layers[i].y, layers[i].amp, layers[i].steps) + '" fill="' + layers[i].fill + '"/>';
-    }
-    return s + '</svg>';
-  }
-
-  var RENDERERS = [styleCity, styleLayers, styleOrbit, styleRidges];
-
-  /* ---------- public api ---------- */
-
-  function pick(seed, opts) {
-    opts = opts || {};
-    var r = rng(hash(seed));
-    var style = Math.floor(r() * RENDERERS.length);
-    var pal = Math.floor(r() * PALETTES.length);
-    if (opts.style != null) style = opts.style % RENDERERS.length;
-    if (opts.palette != null) pal = opts.palette % PALETTES.length;
-    return { r: r, style: style, palette: pal };
-  }
-
-  function svg(seed, opts) {
-    opts = opts || {};
-    var pk = pick(seed, opts);
-    var label = opts.label != null ? opts.label : initials(seed);
-    var id = 'ca' + hash(seed + '|' + pk.style + '|' + pk.palette).toString(36);
-    return RENDERERS[pk.style](id, tones(PALETTES[pk.palette]), pk.r, label);
-  }
-
-  function dataUri(seed, opts) {
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg(seed, opts));
-  }
-
-  function mount(el, seed, opts) {
-    el.innerHTML = svg(seed, opts);
-    return el;
-  }
-
-  root.CardArt = {
-    svg: svg,
-    dataUri: dataUri,
-    mount: mount,
-    initials: initials,
-    styles: STYLE_NAMES,
-    palettes: PALETTES.map(function (p) { return p.name; })
-  };
-})(typeof window !== 'undefined' ? window : this);
-
-</script>
-<script>
-/*!
- * count-label.js
- * Turns the current view (filter + search) into a clear heading and sentence.
- *
- *   ShowcaseCount.describe({ shown: 1, total: 3, tag: 'css', query: '' })
- *   -> { title: 'css projects', sub: 'Showing 1 of 3 projects', empty: false }
- */
-(function (root) {
-  'use strict';
-
-  function plural(count, one, many) {
-    return count + ' ' + (count === 1 ? one : many);
-  }
-
-  function describe(o) {
-    var shown = o.shown, total = o.total, tag = o.tag || '', q = (o.query || '').trim();
-
-    if (!total) {
-      return { title: 'All projects', sub: 'No projects yet', empty: true };
-    }
-
-    if (!tag && !q) {
-      return { title: 'All projects', sub: plural(total, 'project', 'projects'), empty: false };
-    }
-
-    var title = tag ? tag + ' projects' : 'Search results';
-
-    if (!shown) {
-      var none = q ? 'No projects match \u201C' + q + '\u201D' : 'No projects tagged ' + tag;
-      if (q && tag) none += ' in ' + tag;
-      return { title: title, sub: none, empty: true };
-    }
-
-    var parts = 'Showing ' + shown + ' of ' + plural(total, 'project', 'projects');
-    if (q) parts += ' matching \u201C' + q + '\u201D';
-    return { title: title, sub: parts, empty: false };
-  }
-
-  root.ShowcaseCount = { describe: describe };
-})(typeof window !== 'undefined' ? window : this);
-
-</script>
-<script>
-(function () {
-  var TODAY = 'Sep 21, 2026';
-  var projects = [
-    { title: 'gsfdg',          desc: '', tags: ['html'], isNew: true },
-    { title: 'wdw',            desc: 'hgfcnjvjvjvgfdlgklbd fsdf hgfcnjvjvjvgfdlgklbdfkfg hgfcnjvjvjvgfdlgklbdfkfg hgfcnjvjvjvgfdlgklbdfkfg', tags: [] },
-    { title: 'cityfic',        desc: 'f', tags: ['css'], live: '#' },
-    { title: 'Weather Now',    desc: 'Current conditions and a 5 day forecast for any city.', tags: ['javascript', 'api'], live: '#', repo: '#' },
-    { title: 'Budget Tracker', desc: 'Log income and expenses, then see where the month went.', tags: ['react', 'supabase'], repo: '#' },
-    { title: 'Recipe Box',     desc: 'Save recipes, scale servings and build a shopping list.', tags: ['html', 'css', 'javascript'], live: '#', repo: '#' }
-  ];
-
-  var state = { tag: '', q: '' };
-  var $ = function (id) { return document.getElementById(id); };
-  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-
-  function tagCounts() {
-    var map = {};
-    projects.forEach(function (p) { p.tags.forEach(function (t) { map[t] = (map[t] || 0) + 1; }); });
-    return Object.keys(map).sort().map(function (t) { return [t, map[t]]; });
-  }
-
-  function matches(p) {
-    if (state.tag && p.tags.indexOf(state.tag) === -1) return false;
-    var q = state.q.trim().toLowerCase();
-    if (!q) return true;
-    return (p.title + ' ' + p.desc + ' ' + p.tags.join(' ')).toLowerCase().indexOf(q) !== -1;
-  }
-
-  function renderChips(tc) {
-    var html = '<button class="chip" type="button" data-tag="" aria-pressed="' + (state.tag === '') + '">All <span class="chip-n">' + projects.length + '</span></button>';
-    tc.forEach(function (t) {
-      html += '<button class="chip" type="button" data-tag="' + esc(t[0]) + '" aria-pressed="' + (state.tag === t[0]) + '">' + esc(t[0]) + ' <span class="chip-n">' + t[1] + '</span></button>';
-    });
-    $('chips').innerHTML = html;
-  }
-
-  function card(p) {
-    var links = '';
-    if (p.live) links += '<a class="btn btn-grad btn-sm" href="' + esc(p.live) + '">Live demo</a>';
-    if (p.repo) links += '<a class="btn btn-sm" href="' + esc(p.repo) + '">GitHub</a>';
-    return '<article class="card">' +
-      '<div class="art">' + (p.isNew ? '<span class="badge">New</span>' : '') + CardArt.svg(p.title) + '</div>' +
-      '<div class="body"><h3>' + esc(p.title) + '</h3>' +
-        (p.desc ? '<p>' + esc(p.desc) + '</p>' : '') +
-        (p.tags.length ? '<ul class="tags">' + p.tags.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '') +
-        (links ? '<div class="links">' + links + '</div>' : '') +
-      '</div>' +
-      '<div class="foot"><span>Added ' + TODAY + '</span><button class="del" type="button">Delete</button></div>' +
-    '</article>';
-  }
-
-  function render() {
-    var tc = tagCounts();
-    var list = projects.filter(matches);
-    renderChips(tc);
-
-    var d = ShowcaseCount.describe({ shown: list.length, total: projects.length, tag: state.tag, query: state.q, tagCount: tc.length });
-    $('viewTitle').textContent = d.title;
-    $('viewSub').textContent = d.sub;
-
-    $('grid').innerHTML = list.map(card).join('');
-    $('grid').hidden = list.length === 0;
-    $('empty').hidden = list.length !== 0;
-    if (!list.length) $('emptyMsg').textContent = d.sub + '.';
-  }
-
-  $('chips').addEventListener('click', function (e) {
-    var b = e.target.closest('.chip'); if (!b) return;
-    state.tag = b.getAttribute('data-tag'); render();
-  });
-  $('q').addEventListener('input', function (e) { state.q = e.target.value; render(); });
-  $('clear').addEventListener('click', function () { state.tag = ''; state.q = ''; $('q').value = ''; render(); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === '/' && document.activeElement !== $('q')) { e.preventDefault(); $('q').focus(); }
-  });
-
-  render();
-})();
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
