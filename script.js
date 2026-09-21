@@ -11,7 +11,7 @@
   const PAGE_SIZE = 10;
   const MAX_TITLE = 50;
   const MAX_WORDS = 100;
-  const MAX_TAGS = 6;
+  const MAX_TAGS = 12;
 
   /* ---------- Helpers ---------- */
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -397,7 +397,7 @@
   function cardHTML(p, i, isFirstOnFirstPage) {
     const repo = safeUrl(p.repo_url);
     const live = safeUrl(p.live_url);
-    const tags = p.tags.slice(0, 5).map((t) => `<li>${esc(t)}</li>`).join("");
+    const tags = p.tags.slice(0, MAX_TAGS).map((t) => `<li>${esc(t)}</li>`).join("");
     const added = time(p) ? `Added ${dateFmt.format(new Date(time(p)))}` : "";
     // "Live demo" shows only when a live link was added.
     // "GitHub" shows whenever a GitHub link exists (it is required when adding).
@@ -475,7 +475,7 @@
     state.projects.forEach((p) => {
       new Set(p.tags.map((t) => t.toLowerCase())).forEach((t) => counts.set(t, (counts.get(t) || 0) + 1));
     });
-    const top = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 14);
+    const top = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
     if (!top.length) { dom.tagFilters.innerHTML = ""; return; }
     const chip = (label, value, count) =>
       `<button class="chip" type="button" data-tag="${esc(value)}" aria-pressed="${state.tag === (value || null)}">${esc(label)}${count != null ? ` <span>${count}</span>` : ""}</button>`;
