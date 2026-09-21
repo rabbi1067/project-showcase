@@ -399,9 +399,11 @@
     const live = safeUrl(p.live_url);
     const tags = p.tags.slice(0, 5).map((t) => `<li>${esc(t)}</li>`).join("");
     const added = time(p) ? `Added ${dateFmt.format(new Date(time(p)))}` : "";
+    // "Live demo" shows only when a live link was added.
+    // "GitHub" shows whenever a GitHub link exists (it is required when adding).
     const links =
       (live ? `<a class="btn btn-primary btn-small" href="${esc(live)}" target="_blank" rel="noopener noreferrer">Live demo</a>` : "") +
-      (repo ? `<a class="btn btn-small" href="${esc(repo)}" target="_blank" rel="noopener noreferrer">Source code</a>` : "");
+      (repo ? `<a class="btn btn-small" href="${esc(repo)}" target="_blank" rel="noopener noreferrer">GitHub</a>` : "");
     const showBadge = isFirstOnFirstPage && isRecent(p);
     return `
       <article class="card${state.animate ? " enter" : ""}" style="--i:${i}" data-id="${esc(p.id)}">
