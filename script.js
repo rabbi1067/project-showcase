@@ -54,6 +54,27 @@
   const time = (p) => Date.parse(p.created_at) || 0;
   const newestFirst = (a, b) => time(b) - time(a) || String(b.id).localeCompare(String(a.id));
 
+  /* Anonymous visitor id: lets one browser love / count once per project, no login needed. */
+  const memoryVid = (Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).padEnd(16, "0");
+  function visitorId() {
+    try {
+      let v = localStorage.getItem("frf.vid");
+      if (!v || v.length < 16) {
+        v = (window.crypto && crypto.randomUUID && crypto.randomUUID()) || memoryVid;
+        localStorage.setItem("frf.vid", v);
+      }
+      return v;
+    } catch (_) {
+      return memoryVid;
+    }
+  }
+  const fmtCount = (n) => {
+    n = Number(n) || 0;
+    return n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k" : String(n);
+  };
+  const HEART = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-8-4.9-8-11a4.5 4.5 0 0 1 8-2.7A4.5 4.5 0 0 1 20 9c0 6.1-8 11-8 11z"/></svg>';
+  const EYE = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
   /* =========================================================
      1. Config + data layer
      ========================================================= */
@@ -118,6 +139,26 @@
         const { error } = await sb.rpc("showcase_delete_project", { p_code: code, p_id: String(id) });
         if (error) throw fail(error);
       },
+      async stats() {
+        const { data, error } = await sb.rpc("showcase_get_stats", { p_visitor: visitorId() });
+        if (error) throw fail(error);
+        const map = {};
+        (data || []).forEach((r) => {
+          map[String(r.project_id)] = { views: Number(r.views) || 0, loves: Number(r.loves) || 0, loved: !!r.loved };
+        });
+        return map;
+      },
+      async toggleLove(id) {
+        const { data, error } = await sb.rpc("showcase_toggle_love", { p_project: String(id), p_visitor: visitorId() });
+        if (error) throw fail(error);
+        const r = Array.isArray(data) ? data[0] : data;
+        return { loved: !!(r && r.loved), loves: Number((r && r.loves) || 0) };
+      },
+      async recordView(id) {
+        const { data, error } = await sb.rpc("showcase_record_view", { p_project: String(id), p_visitor: visitorId() });
+        if (error) throw fail(error);
+        return Number(data) || 0;
+      },
     };
   }
 
@@ -160,6 +201,10 @@
       try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (_) { /* ignore */ }
     };
 
+    const SKEY = "frf.preview.stats";
+    const loadS = () => { try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch (_) { return {}; } };
+    const saveS = (o) => { try { localStorage.setItem(SKEY, JSON.stringify(o)); } catch (_) { /* ignore */ } };
+
     return {
       mode: "preview",
       async list() { return load().map(normalize).sort(newestFirst); },
@@ -172,6 +217,30 @@
       async remove(id, code) {
         if (!code) throw apiError("That security code is incorrect.", "INVALID_CODE");
         save(load().filter((p) => String(p.id) !== String(id)));
+      },
+      async stats() {
+        const s = loadS(), me = visitorId(), out = {};
+        load().forEach((p) => {
+          const r = s[p.id] || {};
+          out[String(p.id)] = { views: (r.viewers || []).length, loves: (r.lovers || []).length, loved: (r.lovers || []).includes(me) };
+        });
+        return out;
+      },
+      async toggleLove(id) {
+        const s = loadS(), me = visitorId();
+        const r = (s[id] = s[id] || { lovers: [], viewers: [] });
+        const i = (r.lovers || []).indexOf(me);
+        if (i >= 0) r.lovers.splice(i, 1); else (r.lovers = r.lovers || []).push(me);
+        saveS(s);
+        return { loved: r.lovers.includes(me), loves: r.lovers.length };
+      },
+      async recordView(id) {
+        const s = loadS(), me = visitorId();
+        const r = (s[id] = s[id] || { lovers: [], viewers: [] });
+        r.viewers = r.viewers || [];
+        if (!r.viewers.includes(me)) r.viewers.push(me);
+        saveS(s);
+        return r.viewers.length;
       },
     };
   }
@@ -376,7 +445,7 @@
     toast: $("#toast"),
   };
 
-  const state = { projects: [], query: "", tag: null, page: 1, animate: true };
+  const state = { projects: [], query: "", tag: null, page: 1, animate: true, stats: null };
   let api;
 
   const isRecent = (p) => Date.now() - time(p) < 3 * 86400000 && time(p) > 0;
@@ -405,6 +474,13 @@
       (live ? `<a class="btn btn-primary btn-small" href="${esc(live)}" target="_blank" rel="noopener noreferrer">Live demo</a>` : "") +
       (repo ? `<a class="btn btn-small" href="${esc(repo)}" target="_blank" rel="noopener noreferrer">GitHub</a>` : "");
     const showBadge = isFirstOnFirstPage && isRecent(p);
+    const st = state.stats ? state.stats[String(p.id)] || { views: 0, loves: 0, loved: false } : null;
+    const meta = st
+      ? `<div class="card-meta">
+          <button class="love-btn${st.loved ? " is-loved" : ""}" type="button" data-love="${esc(p.id)}" aria-pressed="${st.loved}" aria-label="${st.loved ? "Remove your love from" : "Love"} ${esc(p.title)}">${HEART}<span class="love-count">${fmtCount(st.loves)}</span></button>
+          <span class="views" title="Views">${EYE}<span class="views-count">${fmtCount(st.views)}</span><span class="visually-hidden"> views</span></span>
+        </div>`
+      : "";
     return `
       <article class="card${state.animate ? " enter" : ""}" style="--i:${i}" data-id="${esc(p.id)}">
         <div class="card-media">${coverSVG(p.title)}${showBadge ? '<span class="badge">New</span>' : ""}</div>
@@ -414,6 +490,7 @@
           ${tags ? `<ul class="tags" aria-label="Tags">${tags}</ul>` : ""}
           ${links ? `<div class="card-links">${links}</div>` : ""}
         </div>
+        ${meta}
         <div class="card-foot">
           <span>${esc(added)}</span>
           <button class="link-delete" type="button" data-delete="${esc(p.id)}" aria-label="Delete ${esc(p.title)}">Delete</button>
@@ -531,6 +608,7 @@
 
     renderTags();
     renderPager(pages, state.page);
+    watchViews();
   }
 
   function renderSkeleton() {
@@ -585,6 +663,92 @@
     toastTimer = setTimeout(() => { dom.toast.hidden = true; }, 3200);
   }
 
+  /* ---------- Love + views ---------- */
+  function paintStats(id) {
+    const st = state.stats && state.stats[String(id)];
+    const card = dom.grid.querySelector(`[data-id="${CSS.escape(String(id))}"]`);
+    if (!st || !card) return;
+    const btn = $(".love-btn", card);
+    if (btn) {
+      btn.classList.toggle("is-loved", st.loved);
+      btn.setAttribute("aria-pressed", String(st.loved));
+      const title = ($("h3", card) || {}).textContent || "project";
+      btn.setAttribute("aria-label", `${st.loved ? "Remove your love from" : "Love"} ${title}`);
+      $(".love-count", btn).textContent = fmtCount(st.loves);
+    }
+    const v = $(".views-count", card);
+    if (v) v.textContent = fmtCount(st.views);
+  }
+
+  dom.grid.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-love]");
+    if (!btn || btn.disabled || !state.stats) return;
+    const id = btn.dataset.love;
+    const st = state.stats[id] || (state.stats[id] = { views: 0, loves: 0, loved: false });
+    const before = { ...st };
+    st.loved = !st.loved;
+    st.loves = Math.max(0, st.loves + (st.loved ? 1 : -1));
+    paintStats(id);
+    if (st.loved) {
+      btn.classList.remove("pop");
+      void btn.offsetWidth;
+      btn.classList.add("pop");
+    }
+    btn.disabled = true;
+    try {
+      const r = await api.toggleLove(id);
+      st.loved = r.loved;
+      st.loves = r.loves;
+    } catch (_) {
+      Object.assign(st, before);
+      toast("Couldn't save your love. Try again.");
+    } finally {
+      btn.disabled = false;
+      paintStats(id);
+    }
+  });
+
+  // A view = one visitor sees a project card on screen for a moment. Counted once per visitor.
+  const viewed = new Set((() => { try { return JSON.parse(localStorage.getItem("frf.viewed")) || []; } catch (_) { return []; } })());
+  const saveViewed = () => { try { localStorage.setItem("frf.viewed", JSON.stringify([...viewed])); } catch (_) { /* ignore */ } };
+  const viewTimers = new Map();
+  let viewObserver = null;
+
+  async function countView(id) {
+    if (viewed.has(id) || !state.stats) return;
+    viewed.add(id);
+    saveViewed();
+    try {
+      const n = await api.recordView(id);
+      const st = state.stats[id] || (state.stats[id] = { views: 0, loves: 0, loved: false });
+      st.views = n;
+      paintStats(id);
+    } catch (_) {
+      viewed.delete(id);
+      saveViewed();
+    }
+  }
+
+  function watchViews() {
+    if (viewObserver) viewObserver.disconnect();
+    viewTimers.forEach(clearTimeout);
+    viewTimers.clear();
+    if (!state.stats || !("IntersectionObserver" in window)) return;
+    viewObserver = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        const id = en.target.dataset.id;
+        if (en.isIntersecting) {
+          if (viewed.has(id) || viewTimers.has(id)) return;
+          viewTimers.set(id, setTimeout(() => { viewTimers.delete(id); countView(id); }, 1200));
+        } else if (viewTimers.has(id)) {
+          clearTimeout(viewTimers.get(id));
+          viewTimers.delete(id);
+        }
+      });
+    }, { threshold: 0.6 });
+    $$(".card[data-id]", dom.grid).forEach((c) => viewObserver.observe(c));
+  }
+
   /* ---------- Data loading ---------- */
   async function load() {
     renderSkeleton();
@@ -592,6 +756,7 @@
     dom.noMatch.hidden = true;
     try {
       state.projects = await api.list();
+      try { state.stats = await api.stats(); } catch (_) { state.stats = null; }
       state.animate = true;
       render();
       renderHero();
