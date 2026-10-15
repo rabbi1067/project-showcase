@@ -490,7 +490,7 @@
     errorState: $("#errorState"),
     errorText: $("#errorText"),
     notice: $("#setupNotice"),
-    scene: $("#scene"),
+    scene: $("#scene") || $(".hero-showcase-inner"),
     toast: $("#toast"),
   };
 
@@ -666,40 +666,31 @@
   }
 
   function renderHero() {
-    const src = state.projects.length
-      ? state.projects.slice(0, 4)
-      : [{ title: "Your next project" }, { title: "Ship it" }, { title: "Open source" }];
-    const c = (src.length - 1) / 2;
-    dom.scene.innerHTML = src
-      .map((p, i) => {
-        const x = ((i - c) * 60).toFixed(0);
-        const y = (-(i - c) * 46).toFixed(0);
-        const z = -i * 110;
-        return `
-        <div class="hero-tile" style="--i:${i};--x:${x};--y:${y};--z:${z}">
-          <div class="hero-tile-inner">
-            <div class="hero-tile-media">${coverSVG(p.title)}</div>
-            <div class="hero-tile-label"><strong>${esc(p.title)}</strong>${i === 0 && state.projects.length ? "<span>Latest</span>" : ""}</div>
-          </div>
-        </div>`;
-      })
-      .join("");
+    // Hero showcase portrait is rendered statically in index.html
+    return;
   }
 
   function bindHeroPointer() {
     if (!canTilt) return;
     const hero = $("#hero");
+    if (!hero) return;
+    const portrait = $(".portrait-stage-inner", hero);
+    const bgLetters = $(".giant-letters-track", hero);
     hero.addEventListener("pointermove", (e) => {
       if (e.pointerType !== "mouse") return;
       const r = hero.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
       const py = (e.clientY - r.top) / r.height - 0.5;
-      dom.scene.style.setProperty("--ry", `${(-20 + px * 24).toFixed(2)}deg`);
-      dom.scene.style.setProperty("--rx", `${(9 - py * 14).toFixed(2)}deg`);
+      if (portrait) {
+        portrait.style.transform = `translate3d(${(px * 16).toFixed(1)}px, ${(py * 10).toFixed(1)}px, 0)`;
+      }
+      if (bgLetters) {
+        bgLetters.style.transform = `translate3d(${(-px * 28).toFixed(1)}px, calc(-8% + ${(-py * 14).toFixed(1)}px), 0)`;
+      }
     });
     hero.addEventListener("pointerleave", () => {
-      dom.scene.style.setProperty("--ry", "-20deg");
-      dom.scene.style.setProperty("--rx", "9deg");
+      if (portrait) portrait.style.transform = "translate3d(0, 0, 0)";
+      if (bgLetters) bgLetters.style.transform = "translate3d(0, -8%, 0)";
     });
   }
 
