@@ -619,6 +619,10 @@
     dom.errorState.hidden = true;
     dom.grid.setAttribute("aria-busy", "false");
     dom.countPill.textContent = all.length;
+    const heroLive = $("#heroLiveCount");
+    if (heroLive) {
+      animateCount(heroLive, all.length);
+    }
     dom.toolbar.hidden = all.length === 0;
     dom.empty.hidden = all.length !== 0;
     dom.noMatch.hidden = !(all.length > 0 && list.length === 0);
@@ -660,37 +664,72 @@
     watchViews();
   }
 
+  function animateCount(el, target) {
+    if (!el) return;
+    const current = parseInt(el.textContent, 10);
+    const start = isNaN(current) ? 0 : current;
+    if (start === target) {
+      el.textContent = target;
+      return;
+    }
+    if (prefersReducedMotion) {
+      el.textContent = target;
+      return;
+    }
+    const duration = 650;
+    const startTime = performance.now();
+    function step(now) {
+      const elapsed = now - startTime;
+      const p = Math.min(1, elapsed / duration);
+      // easeOutCubic
+      const ease = 1 - Math.pow(1 - p, 3);
+      const val = Math.round(start + (target - start) * ease);
+      el.textContent = val;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  }
+
   function renderSkeleton() {
     dom.grid.setAttribute("aria-busy", "true");
     dom.grid.innerHTML = Array.from({ length: 6 }, () => '<div class="card skeleton" aria-hidden="true"></div>').join("");
   }
 
   function renderHero() {
-    // Hero showcase portrait is rendered statically in index.html
-    return;
+    // Dynamic real-time counter sync
+    const heroLive = $("#heroLiveCount");
+    if (heroLive && state.projects) {
+      animateCount(heroLive, state.projects.length);
+    }
   }
 
   function bindHeroPointer() {
     if (!canTilt) return;
     const hero = $("#hero");
     if (!hero) return;
-    const portrait = $(".portrait-stage-inner", hero);
-    const bgLetters = $(".giant-letters-track", hero);
+    const portrait = $(".cozmiq-portrait-img", hero);
+    const backdrop = $(".stage-card-backdrop", hero);
+    const watermark = $(".cozmiq-watermark", hero);
     hero.addEventListener("pointermove", (e) => {
       if (e.pointerType !== "mouse") return;
       const r = hero.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
       const py = (e.clientY - r.top) / r.height - 0.5;
       if (portrait) {
-        portrait.style.transform = `translate3d(${(px * 16).toFixed(1)}px, ${(py * 10).toFixed(1)}px, 0)`;
+        portrait.style.transform = `translate3d(${(px * 14).toFixed(1)}px, ${(py * 10).toFixed(1)}px, 0)`;
       }
-      if (bgLetters) {
-        bgLetters.style.transform = `translate3d(${(-px * 28).toFixed(1)}px, calc(-8% + ${(-py * 14).toFixed(1)}px), 0)`;
+      if (backdrop) {
+        backdrop.style.transform = `rotate(-2deg) perspective(800px) rotateY(${(px * 10).toFixed(1)}deg) rotateX(${(-py * 8).toFixed(1)}deg) translate3d(${(px * 6).toFixed(1)}px, ${(py * 4).toFixed(1)}px, 0)`;
+      }
+      if (watermark) {
+        watermark.style.transform = `translateX(-50%) translate3d(${(-px * 24).toFixed(1)}px, ${(-py * 12).toFixed(1)}px, 0)`;
       }
     });
     hero.addEventListener("pointerleave", () => {
       if (portrait) portrait.style.transform = "translate3d(0, 0, 0)";
-      if (bgLetters) bgLetters.style.transform = "translate3d(0, -8%, 0)";
+      if (backdrop) backdrop.style.transform = "rotate(-2deg)";
+      if (watermark) watermark.style.transform = "translateX(-50%)";
     });
   }
 
@@ -901,6 +940,9 @@
   if (openContactBtn && contactDialog) {
     openContactBtn.addEventListener("click", () => openDialog(contactDialog));
   }
+  $$("[data-open-contact]").forEach((btn) => {
+    btn.addEventListener("click", () => openDialog(contactDialog));
+  });
 
   const previewTitle = () => addForm.elements.title.value.trim() || "New project";
   let previewTimer;
