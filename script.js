@@ -139,6 +139,41 @@
         const { error } = await sb.rpc("showcase_delete_project", { p_code: code, p_id: String(id) });
         if (error) throw fail(error);
       },
+      async update(id, p, code) {
+        try {
+          const { error } = await sb.rpc("showcase_update_project", {
+            p_code: code,
+            p_id: String(id),
+            p_title: p.title,
+            p_description: p.description,
+            p_live_url: p.live_url || null,
+            p_repo_url: p.repo_url,
+            p_tags: p.tags,
+          });
+          if (!error) return;
+          if (error && error.code !== "PGRST202") throw fail(error);
+        } catch (rpcErr) {
+          if (rpcErr && rpcErr.code && rpcErr.code !== "PGRST202") throw rpcErr;
+        }
+
+        const { error: codeErr } = await sb.rpc("showcase_delete_project", {
+          p_code: code,
+          p_id: "00000000-0000-0000-0000-000000000000",
+        });
+        if (codeErr) throw fail(codeErr);
+
+        const { error: updErr } = await sb
+          .from("projects")
+          .update({
+            title: p.title,
+            description: p.description,
+            live_url: p.live_url || null,
+            repo_url: p.repo_url,
+            tags: p.tags,
+          })
+          .eq("id", id);
+        if (updErr) throw fail(updErr);
+      },
       async stats() {
         const { data, error } = await sb.rpc("showcase_get_stats", { p_visitor: visitorId() });
         if (error) throw fail(error);
@@ -217,6 +252,20 @@
       async remove(id, code) {
         if (!code) throw apiError("That security code is incorrect.", "INVALID_CODE");
         save(load().filter((p) => String(p.id) !== String(id)));
+      },
+      async update(id, p, code) {
+        if (!code) throw apiError("That security code is incorrect.", "INVALID_CODE");
+        const list = load();
+        const idx = list.findIndex((x) => String(x.id) === String(id));
+        if (idx >= 0) {
+          list[idx] = {
+            ...list[idx],
+            ...p,
+            id,
+            created_at: list[idx].created_at || new Date().toISOString(),
+          };
+          save(list);
+        }
       },
       async stats() {
         const s = loadS(), me = visitorId(), out = {};
@@ -490,7 +539,10 @@
         </div>
         <div class="card-foot">
           <span>${esc(added)}</span>
-          <button class="link-delete" type="button" data-delete="${esc(p.id)}" aria-label="Delete ${esc(p.title)}">Delete</button>
+          <div class="card-foot-actions">
+            <button class="link-edit" type="button" data-edit="${esc(p.id)}" aria-label="Edit ${esc(p.title)}">Edit</button>
+            <button class="link-delete" type="button" data-delete="${esc(p.id)}" aria-label="Delete ${esc(p.title)}">Delete</button>
+          </div>
         </div>
       </article>`;
   }
@@ -831,22 +883,33 @@
   syncThemeUI();
 
   /* =========================================================
-     4. Add / delete flows
+     4. Add / edit / delete flows & Contact
      ========================================================= */
   const addDialog = $("#addDialog");
   const addForm = $("#addForm");
+  const editDialog = $("#editDialog");
+  const editForm = $("#editForm");
   const deleteDialog = $("#deleteDialog");
   const deleteForm = $("#deleteForm");
+  const contactDialog = $("#contactDialog");
   const coverPreview = $("#coverPreview");
+  const editCoverPreview = $("#editCoverPreview");
   let deleteId = null;
+  let editId = null;
 
   function openDialog(d) {
+    if (!d) return;
     if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
   }
   $$("dialog").forEach((d) => {
     d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
     $$("[data-close]", d).forEach((b) => b.addEventListener("click", () => d.close()));
   });
+
+  const openContactBtn = $("#openContact");
+  if (openContactBtn && contactDialog) {
+    openContactBtn.addEventListener("click", () => openDialog(contactDialog));
+  }
 
   const previewTitle = () => addForm.elements.title.value.trim() || "New project";
   let previewTimer;
@@ -993,6 +1056,134 @@
       btn.textContent = "Delete project";
     }
   });
+
+  // edit project
+  const editPreviewTitle = () => (editForm ? editForm.elements.title.value.trim() || "Project" : "Project");
+  let editPreviewTimer;
+  function updateEditPreview() {
+    clearTimeout(editPreviewTimer);
+    editPreviewTimer = setTimeout(() => {
+      if (editCoverPreview) editCoverPreview.innerHTML = coverSVG(editPreviewTitle());
+    }, 120);
+  }
+
+  function updateEditCounters() {
+    if (!editForm) return;
+    const t = editForm.elements.title.value.length;
+    const tc = $("#editTitleCount");
+    if (tc) tc.textContent = `${t}/${MAX_TITLE}`;
+    const w = wordCount(editForm.elements.description.value);
+    const dc = $("#editDescCount");
+    if (dc) {
+      dc.textContent = `${w}/${MAX_WORDS} words`;
+      dc.classList.toggle("over", w > MAX_WORDS);
+    }
+  }
+
+  function clearEditErrors() {
+    if (!editForm) return;
+    $$(".field-error", editForm).forEach((p) => { p.hidden = true; p.textContent = ""; });
+    $$(".field.invalid", editForm).forEach((f) => f.classList.remove("invalid"));
+    const eb = $("#editError");
+    if (eb) eb.hidden = true;
+  }
+
+  function showEditErrors(errors) {
+    if (!editForm) return;
+    let first = null;
+    Object.entries(errors).forEach(([name, msg]) => {
+      const p = $(`#err-e-${name}`);
+      const input = editForm.elements[name];
+      if (!p || !input) return;
+      p.textContent = msg;
+      p.hidden = false;
+      input.closest(".field").classList.add("invalid");
+      first = first || input;
+    });
+    if (first) first.focus();
+  }
+
+  function validateEdit() {
+    const errors = {};
+    const title = editForm.elements.title.value.trim();
+    const description = editForm.elements.description.value.trim();
+    const live = editForm.elements.live_url.value.trim();
+    const repoRaw = editForm.elements.repo_url.value.trim();
+    const tags = [...new Set(editForm.elements.tags.value.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean))];
+
+    if (title.length < 2) errors.title = `Enter a project name (2–${MAX_TITLE} characters).`;
+    if (wordCount(description) > MAX_WORDS) errors.description = `Keep the description to ${MAX_WORDS} words or fewer.`;
+    if (!repoRaw) errors.repo_url = "A GitHub link is required.";
+    else if (!parseGithub(repoRaw)) errors.repo_url = "Enter a repository link like https://github.com/username/repo.";
+    if (live && !safeUrl(live)) errors.live_url = "Enter a full link starting with https://.";
+    if (tags.length > MAX_TAGS) errors.tags = `Use up to ${MAX_TAGS} tags.`;
+    else if (tags.some((t) => t.length > 20)) errors.tags = "Each tag can be up to 20 characters.";
+    if (!editForm.elements.code.value) errors.code = "Enter the security code.";
+
+    return {
+      errors,
+      clean: { title, description, live_url: live ? safeUrl(live) : "", repo_url: parseGithub(repoRaw), tags },
+    };
+  }
+
+  function openEdit(id) {
+    if (!editForm || !editDialog) return;
+    editId = id;
+    const p = state.projects.find((x) => String(x.id) === String(id));
+    if (!p) return;
+    editForm.reset();
+    clearEditErrors();
+    editForm.elements.id.value = p.id;
+    editForm.elements.title.value = p.title || "";
+    editForm.elements.description.value = p.description || "";
+    editForm.elements.repo_url.value = p.repo_url || "";
+    editForm.elements.live_url.value = p.live_url || "";
+    editForm.elements.tags.value = (p.tags || []).join(", ");
+    editForm.elements.code.value = "";
+    updateEditCounters();
+    if (editCoverPreview) editCoverPreview.innerHTML = coverSVG(p.title || "Project");
+    openDialog(editDialog);
+    setTimeout(() => editForm.elements.title.focus(), 30);
+  }
+
+  dom.grid.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-edit]");
+    if (!btn) return;
+    openEdit(btn.dataset.edit);
+  });
+
+  if (editForm) {
+    editForm.elements.title.addEventListener("input", () => { updateEditCounters(); updateEditPreview(); });
+    editForm.elements.description.addEventListener("input", updateEditCounters);
+
+    editForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearEditErrors();
+      const { errors, clean } = validateEdit();
+      if (Object.keys(errors).length) { showEditErrors(errors); return; }
+
+      const btn = $("#editSubmit");
+      btn.disabled = true;
+      btn.textContent = "Saving…";
+      try {
+        await api.update(editId, clean, editForm.elements.code.value);
+        editDialog.close();
+        state.animate = true;
+        await load();
+        toast("Project updated");
+      } catch (err) {
+        if (err.code === "INVALID_CODE") showEditErrors({ code: err.message });
+        else {
+          const box = $("#editError");
+          box.textContent = err.message || "Couldn't update the project.";
+          box.hidden = false;
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save changes";
+      }
+    });
+  }
 
   /* ---------- Boot ---------- */
   function boot() {
