@@ -944,6 +944,117 @@
     btn.addEventListener("click", () => openDialog(contactDialog));
   });
 
+  /* ---------- Video Features (In-Card Switcher, Theater Modal, Showcase Section) ---------- */
+  function initVideoFeatures() {
+    const tabPortrait = $("#tabPortrait");
+    const tabVideo = $("#tabVideo");
+    const stagePortraitView = $("#stagePortraitView");
+    const stageVideoView = $("#stageVideoView");
+    const cardVideo = $("#cardVideoElem");
+    const quickPlay = $("#quickPlayBtn");
+
+    function setStageView(view) {
+      const isVideo = view === "video";
+      if (tabPortrait) {
+        tabPortrait.classList.toggle("is-active", !isVideo);
+        tabPortrait.setAttribute("aria-selected", !isVideo ? "true" : "false");
+      }
+      if (tabVideo) {
+        tabVideo.classList.toggle("is-active", isVideo);
+        tabVideo.setAttribute("aria-selected", isVideo ? "true" : "false");
+      }
+      if (stagePortraitView) stagePortraitView.classList.toggle("is-active", !isVideo);
+      if (stageVideoView) stageVideoView.classList.toggle("is-active", isVideo);
+
+      if (cardVideo) {
+        if (isVideo) {
+          cardVideo.play().catch(() => {});
+        } else {
+          cardVideo.pause();
+        }
+      }
+    }
+
+    if (tabPortrait) tabPortrait.addEventListener("click", () => setStageView("portrait"));
+    if (tabVideo) tabVideo.addEventListener("click", () => setStageView("video"));
+    if (quickPlay) quickPlay.addEventListener("click", () => setStageView("video"));
+
+    // In-card controls
+    const cardPlayBtn = $("#cardVideoPlayPause");
+    if (cardPlayBtn && cardVideo) {
+      const iconPlay = $(".icon-play", cardPlayBtn);
+      const iconPause = $(".icon-pause", cardPlayBtn);
+      cardPlayBtn.addEventListener("click", () => {
+        if (cardVideo.paused) {
+          cardVideo.play().catch(() => {});
+          if (iconPlay) iconPlay.hidden = true;
+          if (iconPause) iconPause.hidden = false;
+        } else {
+          cardVideo.pause();
+          if (iconPlay) iconPlay.hidden = false;
+          if (iconPause) iconPause.hidden = true;
+        }
+      });
+    }
+
+    const cardMuteBtn = $("#cardVideoMute");
+    if (cardMuteBtn && cardVideo) {
+      const iconMuted = $(".icon-muted", cardMuteBtn);
+      const iconUnmuted = $(".icon-unmuted", cardMuteBtn);
+      cardMuteBtn.addEventListener("click", () => {
+        cardVideo.muted = !cardVideo.muted;
+        if (iconMuted) iconMuted.hidden = !cardVideo.muted;
+        if (iconUnmuted) iconUnmuted.hidden = cardVideo.muted;
+      });
+    }
+
+    // Video Dialog (Theater Mode)
+    const videoDialog = $("#videoDialog");
+    const modalVideo = $("#modalVideoElem");
+    const openVideoBtn = $("#openVideoBtn");
+    const cardVideoExpand = $("#cardVideoExpand");
+
+    function openVideoModal() {
+      if (!videoDialog) return;
+      openDialog(videoDialog);
+      if (modalVideo) {
+        modalVideo.currentTime = 0;
+        modalVideo.play().catch(() => {});
+      }
+    }
+
+    if (openVideoBtn) openVideoBtn.addEventListener("click", openVideoModal);
+    if (cardVideoExpand) cardVideoExpand.addEventListener("click", openVideoModal);
+
+    if (videoDialog) {
+      videoDialog.addEventListener("close", () => {
+        if (modalVideo) modalVideo.pause();
+      });
+    }
+
+    // Section Video Toggle
+    const sectionVideo = $("#showcaseVideoElem");
+    const sectionToggleBtn = $("#sectionVideoToggle");
+    if (sectionVideo && sectionToggleBtn) {
+      const iconPlay = $(".icon-toggle-play", sectionToggleBtn);
+      const iconPause = $(".icon-toggle-pause", sectionToggleBtn);
+      const label = $(".video-toggle-label", sectionToggleBtn);
+      sectionToggleBtn.addEventListener("click", () => {
+        if (sectionVideo.paused) {
+          sectionVideo.play().catch(() => {});
+          if (iconPlay) iconPlay.hidden = true;
+          if (iconPause) iconPause.hidden = false;
+          if (label) label.textContent = "Pause";
+        } else {
+          sectionVideo.pause();
+          if (iconPlay) iconPlay.hidden = false;
+          if (iconPause) iconPause.hidden = true;
+          if (label) label.textContent = "Play";
+        }
+      });
+    }
+  }
+
   const previewTitle = () => addForm.elements.title.value.trim() || "New project";
   let previewTimer;
   function updatePreview() {
@@ -1240,6 +1351,7 @@
       notice.hidden = false;
     }
     bindHeroPointer();
+    initVideoFeatures();
     load();
   }
 
