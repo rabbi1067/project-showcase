@@ -96,10 +96,7 @@
       <div class="cozmiq-header-block">
         <div class="cozmiq-headline-row row-1">
           <span class="text-prefix">BUILD WITH &mdash;</span>
-          <span class="neon-highlight-pill">
-            <span class="pill-glow-sparkle" aria-hidden="true">&#x2728;</span>
-            <span class="pill-text">AI &amp; FULL STACK</span>
-          </span>
+          <span class="neon-highlight-pill">AI &amp; FULL STACK</span>
         </div>
         <div class="cozmiq-headline-row row-2">
           <span class="text-role">ENGINEER</span>
@@ -157,57 +154,16 @@
         </div>
 
         <!-- Center Stage: Cutout Portrait + Studio Card + Spinning "HIRE ME ↗" Badge -->
-        <!-- Center Stage: Cutout Portrait / Video Reel + Studio Card + Spinning "HIRE ME ↗" Badge -->
+        <!-- Center Stage: Cutout Portrait + Studio Card + Spinning "HIRE ME ↗" Badge -->
         <div class="cozmiq-col col-portrait">
-          <!-- View Switcher Capsule: Portrait | UI Video -->
-          <div class="stage-view-capsule" role="tablist" aria-label="Hero display mode">
-            <button class="stage-tab-btn is-active" id="tabPortrait" type="button" role="tab" aria-selected="true">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
-              <span>Portrait</span>
-            </button>
-            <button class="stage-tab-btn" id="tabVideo" type="button" role="tab" aria-selected="false">
-              <span class="live-pulse-dot" aria-hidden="true"></span>
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
-              <span>UI Video</span>
-            </button>
-          </div>
-
           <div class="portrait-stage-box" id="stageBox">
             <!-- Studio Card Backdrop -->
             <div class="stage-card-backdrop" aria-hidden="true">
               <div class="backdrop-lens-glow"></div>
             </div>
 
-            <!-- Portrait Cutout View -->
-            <div class="stage-view-item stage-portrait-view is-active" id="stagePortraitView">
-              <img class="cozmiq-portrait-img" src="fazley-rabbi-portrait.png" alt="Md Fazley Rabbi" width="620" height="752" loading="eager">
-              <button class="stage-quick-play-pill" id="quickPlayBtn" type="button" aria-label="Play animation video">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
-                <span>Play UI Reel</span>
-              </button>
-            </div>
-
-            <!-- In-Card Video View -->
-            <div class="stage-view-item stage-video-view" id="stageVideoView">
-              <div class="card-video-wrapper">
-                <video class="stage-embedded-video" id="cardVideoElem" loop muted playsinline preload="metadata">
-                  <source src="portfolio-showcase.mp4" type="video/mp4">
-                </video>
-                <div class="video-in-card-controls">
-                  <button class="in-card-ctrl-btn" id="cardVideoPlayPause" type="button" aria-label="Play or pause video">
-                    <svg class="icon-pause" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    <svg class="icon-play" viewBox="0 0 24 24" width="13" height="13" fill="currentColor" hidden><polygon points="6 4 20 12 6 20 6 4"/></svg>
-                  </button>
-                  <button class="in-card-ctrl-btn" id="cardVideoMute" type="button" aria-label="Mute or unmute video">
-                    <svg class="icon-muted" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-                    <svg class="icon-unmuted" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" hidden><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                  </button>
-                  <button class="in-card-ctrl-btn" id="cardVideoExpand" type="button" aria-label="Open full theater video">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-                  </button>
-                </div>
-              </div>
-            </div>
+            <!-- Portrait Cutout -->
+            <img class="cozmiq-portrait-img" src="fazley-rabbi-portrait.png" alt="Md Fazley Rabbi" width="620" height="752" loading="eager">
 
             <!-- Signature Cozmiq Rotating Hire Me Badge -->
             <button class="spinning-hire-badge" type="button" data-open-contact aria-label="Hire Md Fazley Rabbi">
@@ -242,12 +198,6 @@
                   <path d="M7 17L17 7M17 7H7M17 7V17"/>
                 </svg>
               </a>
-              <button class="btn btn-watch-video" id="openVideoBtn" type="button" aria-label="Watch showcase animation video">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
-                  <polygon points="6 4 20 12 6 20 6 4"/>
-                </svg>
-                <span>Watch Video</span>
-              </button>
             </div>
           </div>
 
@@ -271,67 +221,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Cozmiq Continuous Neon Marquee Ticker Strip -->
-  <div class="cozmiq-marquee-strip" aria-hidden="true">
-    <div class="marquee-track">
-      <span class="marquee-item">AI &amp; MACHINE LEARNING</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">FULL STACK ARCHITECTURE</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">SPRING BOOT MICROSERVICES</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">DEEP LEARNING SYSTEMS</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">POSTGRESQL &amp; SUPABASE</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">CLOUD NATIVE &amp; DOCKER</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">AI &amp; MACHINE LEARNING</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">FULL STACK ARCHITECTURE</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">SPRING BOOT MICROSERVICES</span>
-      <span class="marquee-star">&#x2733;</span>
-      <span class="marquee-item">DEEP LEARNING SYSTEMS</span>
-      <span class="marquee-star">&#x2733;</span>
-    </div>
-  </div>
-
-  <!-- Showcase Video Section -->
-  <section class="wrap video-showcase-section" id="videoShowcase" aria-label="Portfolio UI Animation Showcase Video">
-    <div class="video-showcase-card">
-      <div class="video-showcase-header">
-        <div class="video-header-left">
-          <div class="video-tag-pill">
-            <span class="video-pulse-dot" aria-hidden="true"></span>
-            <span>SHOWCASE ANIMATION REEL</span>
-          </div>
-          <h2 class="video-showcase-title">Modern Portfolio Concept Walkthrough</h2>
-          <p class="video-showcase-sub">Watch the complete interactive fluid animation, micro-interactions, and design system in action.</p>
-        </div>
-        <div class="video-header-actions">
-          <button class="btn btn-small btn-video-play-toggle" id="sectionVideoToggle" type="button">
-            <svg class="icon-toggle-play" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" hidden><polygon points="6 4 20 12 6 20 6 4"/></svg>
-            <svg class="icon-toggle-pause" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-            <span class="video-toggle-label">Pause</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="video-player-container">
-        <video class="video-featured-player" id="showcaseVideoElem" autoplay loop muted playsinline controls poster="fazley-rabbi-portrait.png">
-          <source src="portfolio-showcase.mp4" type="video/mp4">
-          Your browser does not support HTML5 video.
-        </video>
-        <div class="video-floating-meta" aria-hidden="true">
-          <span class="meta-tag">60 FPS Fluid UI</span>
-          <span class="meta-sep">&bull;</span>
-          <span class="meta-tag">Dribbble Concept</span>
         </div>
       </div>
     </div>
@@ -704,34 +593,6 @@
         </a>
       </div>
       <button class="btn btn-ghost btn-small" type="button" data-close>Close</button>
-    </div>
-  </div>
-</dialog>
-
-<!-- Theater Mode Video Dialog -->
-<dialog id="videoDialog" class="dlg-video" aria-labelledby="videoDialogTitle">
-  <div class="dlg-video-inner">
-    <div class="dlg-video-header">
-      <div class="dlg-video-title-group">
-        <span class="dlg-video-badge">Dribbble Concept Walkthrough</span>
-        <h3 id="videoDialogTitle">Modern Portfolio Concept Animation</h3>
-      </div>
-      <button class="icon-btn dlg-video-close" id="closeVideoDialog" type="button" aria-label="Close video dialog" data-close>
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="dlg-video-body">
-      <video class="modal-video-elem" id="modalVideoElem" controls playsinline preload="metadata">
-        <source src="portfolio-showcase.mp4" type="video/mp4">
-        Your browser does not support HTML5 video.
-      </video>
-    </div>
-    <div class="dlg-video-foot">
-      <span class="dlg-video-note">Smooth 60 FPS UI design &amp; micro-interactions</span>
-      <a class="dlg-video-link" href="https://dribbble.com/shots/26710603-Modern-Portfolio-Website-Design-Landing-Page-Home-Page-UI" target="_blank" rel="noopener noreferrer">
-        <span>View on Dribbble</span>
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-      </a>
     </div>
   </div>
 </dialog>
