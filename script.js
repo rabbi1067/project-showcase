@@ -758,8 +758,11 @@
       }, 2500); // 2.5 seconds auto-hide delay after mouse leaves
     }
 
-    // Mouse hover reveals skill tags immediately; leaving schedules hide after 2.5s
+    // Mouse movement or hover reveals tags and keeps them alive
     stage.addEventListener("mouseenter", showCapsules);
+    stage.addEventListener("pointermove", (e) => {
+      if (e.pointerType === "mouse") showCapsules();
+    });
     stage.addEventListener("mouseleave", scheduleHide);
 
     // Support keyboard focus accessibility
