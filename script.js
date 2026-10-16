@@ -708,28 +708,28 @@
     if (!canTilt) return;
     const hero = $("#hero");
     if (!hero) return;
-    const portrait = $(".cozmiq-portrait-img", hero);
-    const backdrop = $(".stage-card-backdrop", hero);
-    const watermark = $(".cozmiq-watermark", hero);
+    const portrait = $(".groly-portrait-img", hero);
+    const aura = $(".aura-radial-core", hero);
+    const watermark = $(".groly-watermark", hero);
     hero.addEventListener("pointermove", (e) => {
       if (e.pointerType !== "mouse") return;
       const r = hero.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
       const py = (e.clientY - r.top) / r.height - 0.5;
       if (portrait) {
-        portrait.style.transform = `translate3d(${(px * 14).toFixed(1)}px, ${(py * 10).toFixed(1)}px, 0)`;
+        portrait.style.transform = `translate3d(${(px * 16).toFixed(1)}px, ${(py * 10).toFixed(1)}px, 0)`;
       }
-      if (backdrop) {
-        backdrop.style.transform = `rotate(-2deg) perspective(800px) rotateY(${(px * 10).toFixed(1)}deg) rotateX(${(-py * 8).toFixed(1)}deg) translate3d(${(px * 6).toFixed(1)}px, ${(py * 4).toFixed(1)}px, 0)`;
+      if (aura) {
+        aura.style.transform = `translate(-50%, -50%) translate3d(${(px * 24).toFixed(1)}px, ${(py * 18).toFixed(1)}px, 0)`;
       }
       if (watermark) {
-        watermark.style.transform = `translateX(-50%) translate3d(${(-px * 24).toFixed(1)}px, ${(-py * 12).toFixed(1)}px, 0)`;
+        watermark.style.transform = `translate(-50%, -50%) translate3d(${(-px * 20).toFixed(1)}px, ${(-py * 12).toFixed(1)}px, 0)`;
       }
     });
     hero.addEventListener("pointerleave", () => {
       if (portrait) portrait.style.transform = "translate3d(0, 0, 0)";
-      if (backdrop) backdrop.style.transform = "rotate(-2deg)";
-      if (watermark) watermark.style.transform = "translateX(-50%)";
+      if (aura) aura.style.transform = "translate(-50%, -50%)";
+      if (watermark) watermark.style.transform = "translate(-50%, -50%)";
     });
   }
 
