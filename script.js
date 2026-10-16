@@ -778,6 +778,41 @@
     }, { passive: true });
   }
 
+  /* Scroll Down auto-hide on scrolling down and reveal on scrolling up / top */
+  function bindScrollIndicator() {
+    const indicator = $("#heroScrollDown");
+    if (!indicator) return;
+
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    function onScroll() {
+      const currentY = window.scrollY;
+      if (currentY <= 50) {
+        // At the top of the hero: show
+        indicator.classList.remove("is-hidden");
+      } else if (currentY > lastY && currentY > 50) {
+        // Scrolling down: auto-hide
+        indicator.classList.add("is-hidden");
+      } else if (currentY < lastY && currentY < 480) {
+        // Scrolling back up towards hero: show again
+        indicator.classList.remove("is-hidden");
+      } else if (currentY >= 480) {
+        // Deep in project content: keep hidden
+        indicator.classList.add("is-hidden");
+      }
+      lastY = currentY;
+      ticking = false;
+    }
+
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
   /* ---------- Toast ---------- */
   let toastTimer;
   function toast(msg) {
@@ -1298,6 +1333,7 @@
     }
     bindHeroPointer();
     bindGrolyCapsules();
+    bindScrollIndicator();
     load();
   }
 
