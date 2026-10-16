@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
@@ -177,15 +177,22 @@
             </a>
           </div>
 
-          <!-- Animated Scroll Down Indicator (Centered Underneath Discover My Works with scroll auto-hide) -->
+          <!-- 3D Animated Scroll Down Indicator (Centered Underneath Discover My Works with scroll auto-hide) -->
           <a class="groly-scroll-indicator" id="heroScrollDown" href="#projects" aria-label="Scroll down to projects">
-            <span class="scroll-mouse-track" aria-hidden="true">
-              <span class="scroll-mouse-wheel"></span>
+            <span class="scroll-3d-chassis" aria-hidden="true">
+              <span class="scroll-3d-wheel-track">
+                <span class="scroll-3d-wheel"></span>
+              </span>
             </span>
             <span class="scroll-text">Scroll Down</span>
-            <svg class="scroll-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 5v14M19 12l-7 7-7-7"/>
-            </svg>
+            <span class="scroll-3d-chevrons" aria-hidden="true">
+              <svg class="scroll-chevron-top" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+              <svg class="scroll-chevron-bot" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </span>
           </a>
         </div>
 
@@ -629,6 +636,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-<script src="script.js"></script>
+<script src="script.js?v=3"></script>
 </body>
 </html>
