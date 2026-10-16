@@ -24,7 +24,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -62,27 +62,23 @@
         <span class="brand-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo-mark"/></svg></span>
         <span class="brand-name">FR Foundry</span>
       </a>
+      <button class="btn btn-contact" id="openContact" type="button" aria-label="Get in touch with Fazley Rabbi">
+        <span class="btn-contact-status" aria-hidden="true">
+          <span class="btn-contact-ping"></span>
+          <span class="btn-contact-dot"></span>
+        </span>
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Contact</span>
+      </button>
     </div>
-
-    <!-- Center Navigation Links (Matching GROLY demo) -->
-    <nav class="topbar-nav" aria-label="Primary navigation">
-      <a class="nav-link is-active" href="#hero">Home</a>
-      <a class="nav-link" href="#projects">Portfolio</a>
-      <a class="nav-link" href="#projects" data-filter="AI">AI &amp; ML</a>
-      <a class="nav-link" href="#projects" data-filter="Java">Backend</a>
-      <a class="nav-link" href="#contact" data-open-contact>Contact</a>
-    </nav>
 
     <div class="topbar-actions">
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
         <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
       </button>
-      <button class="btn btn-contact-me" id="openContact" type="button" aria-label="Contact Md Fazley Rabbi">
-        <span>Contact Me</span>
-      </button>
-      <button class="btn btn-primary btn-add-project" id="openAdd" type="button">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      <button class="btn btn-primary" id="openAdd" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         <span>Add project</span>
       </button>
     </div>
@@ -90,70 +86,88 @@
 </header>
 
 <main>
-  <!-- GROLY Style Centered Stage Hero Section -->
-  <section class="groly-hero" id="hero" aria-label="Md Fazley Rabbi - AI Engineer &amp; Full Stack Developer">
-    <!-- Atmospheric Radiant Aura Glow Directly Behind Portrait (Signature GROLY Lighting) -->
-    <div class="groly-ambient-aura" aria-hidden="true">
-      <div class="aura-radial-core"></div>
-      <div class="aura-spotlight-beam"></div>
-      <div class="aura-orbital-ring ring-inner"></div>
-      <div class="aura-orbital-ring ring-outer"></div>
+  <section class="matthew-hero" id="hero" aria-label="Md Fazley Rabbi - AI Engineer &amp; Full Stack Developer">
+    <!-- Architectural background with geometric arcs & studio aura -->
+    <div class="hero-backdrop" aria-hidden="true">
+      <div class="hero-arcs">
+        <svg viewBox="0 0 1200 640" preserveAspectRatio="none" fill="none">
+          <ellipse cx="600" cy="420" rx="440" ry="250" stroke="currentColor" stroke-width="1.2" stroke-dasharray="6 8" opacity="0.35"/>
+          <ellipse cx="600" cy="440" rx="580" ry="340" stroke="currentColor" stroke-width="1.2" opacity="0.22"/>
+          <circle cx="600" cy="380" r="280" stroke="currentColor" stroke-width="1" opacity="0.18"/>
+        </svg>
+      </div>
+      <div class="hero-ambient-glow"></div>
     </div>
 
-    <!-- Subtle Background Monogram / Watermark -->
-    <div class="groly-watermark" aria-hidden="true">FAZLEY RABBI</div>
+    <!-- Giant Background Architectural Typography -->
+    <div class="hero-giant-letters" aria-hidden="true">
+      <div class="giant-letters-track">
+        <span class="giant-word giant-first">FAZLEY</span>
+        <span class="giant-word giant-last">RABBI</span>
+      </div>
+    </div>
 
-    <div class="wrap groly-hero-inner">
-      <!-- Centered Top Headline Group (Matching GROLY demo: Bold Sans Top, Graceful Italic Serif Role) -->
-      <div class="groly-headline-group">
-        <h1 class="groly-title-main">
-          <span class="groly-greeting">Hello i’m Fazley Rabbi</span>
-          <span class="groly-role-serif">AI Engineer &amp; Full Stack Developer</span>
+    <div class="wrap hero-editorial-grid">
+      <!-- Left Column: Role & Bio -->
+      <div class="editorial-col col-left">
+        <div class="editorial-badge">
+          <span class="status-indicator-dot"></span>
+          <span>FREELANCE / AVAILABLE</span>
+        </div>
+        <h1 class="editorial-main-title">
+          <span>AI Engineer &amp;</span>
+          <span class="highlight-text">Full Stack Developer</span>
         </h1>
-        <p class="groly-sub-bio">
-          Southeast University (CSE) &bull; Competitive Programmer. Crafting high-performance intelligent web applications, modern microservices &amp; AI architectures.
+        <p class="editorial-bio">
+          Southeast University (CSE) &middot; Competitive Programmer. Crafting high-performance intelligent web applications, modern microservices, and AI architectures.
         </p>
+        <div class="editorial-cta-row">
+          <a class="btn btn-primary" href="#projects">
+            <span>Browse projects</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <button class="btn btn-hire" type="button" data-open-contact>
+            <span class="hire-ping-wrapper" aria-hidden="true">
+              <span class="hire-ping"></span>
+              <span class="hire-dot"></span>
+            </span>
+            <span>Hire me</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Center Portrait Stage with Floating Capsules & Glow Silhouette -->
-      <div class="groly-stage-wrapper">
-        <!-- Floating Skill Capsules (Floating in 3D around cutout portrait) -->
-        <div class="floating-capsule cap-tl" style="--float-delay: 0s;">
-          <span class="cap-sparkle">✦</span>
-          <span>AI &amp; Neural Nets</span>
-        </div>
+      <!-- Center Column: Dead-Center Portrait -->
+      <div class="editorial-col col-center">
+        <div class="portrait-stage-inner">
+          <div class="portrait-shadow-pad"></div>
+          <img class="matthew-portrait" src="fazley-rabbi-portrait.png" alt="Md Fazley Rabbi" width="620" height="752" loading="eager">
 
-        <div class="floating-capsule cap-bl" style="--float-delay: 1.4s;">
-          <span class="cap-icon">&lt;/&gt;</span>
-          <span>Full Stack Systems</span>
-        </div>
+          <!-- Left Floating Micro-Badge -->
+          <div class="floating-badge badge-ai-pos">
+            <span class="badge-icon-wrap ai-icon">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2C12 7.5 7.5 12 2 12C7.5 12 12 16.5 12 22C12 16.5 16.5 12 22 12C16.5 12 12 7.5 12 2Z"/></svg>
+            </span>
+            <span class="badge-label">AI &amp; Neural Nets</span>
+          </div>
 
-        <div class="floating-capsule cap-tr" style="--float-delay: 0.7s;">
-          <span class="cap-icon">⚡</span>
-          <span>Spring Boot &amp; Java</span>
-        </div>
+          <!-- Right Floating Micro-Badge -->
+          <div class="floating-badge badge-dev-pos">
+            <span class="badge-icon-wrap dev-icon">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </span>
+            <span class="badge-label">Full Stack Systems</span>
+          </div>
 
-        <div class="floating-capsule cap-br" style="--float-delay: 2.1s;">
-          <span class="cap-icon">🧠</span>
-          <span>Deep Learning &amp; NLP</span>
-        </div>
-
-        <!-- Center Cutout Portrait Container -->
-        <div class="groly-portrait-container">
-          <div class="portrait-backdrop-halo" aria-hidden="true"></div>
-          <img class="groly-portrait-img" src="fazley-rabbi-portrait.png" alt="Md Fazley Rabbi" width="620" height="752" fetchpriority="high">
-
-          <!-- Verified Identity Pill -->
-          <div class="groly-identity-pill">
-            <span class="tag-avatar-letter">FR</span>
-            <span class="tag-name">Md Fazley Rabbi</span>
-            <svg class="verified-icon" viewBox="0 0 24 24" width="15" height="15" aria-label="Verified">
+          <!-- Center Identity Plate Anchoring Portrait -->
+          <div class="portrait-identity-plate">
+            <span class="plate-name">Md Fazley Rabbi</span>
+            <svg class="verified-icon" viewBox="0 0 24 24" width="16" height="16" aria-label="Verified">
               <circle cx="12" cy="12" r="10" fill="#2447F5"/>
               <path d="m8.5 12.3 2.3 2.3 4.7-4.8" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="tag-dot">&middot;</span>
-            <span class="tag-loc">Dhaka, BD</span>
-            <svg class="flag-icon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true">
+            <span class="plate-sep" aria-hidden="true">&middot;</span>
+            <span class="plate-location">Dhaka, BD</span>
+            <svg class="flag-icon" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
               <circle cx="10" cy="10" r="10" fill="#006a4e"/>
               <circle cx="9.2" cy="10" r="4.6" fill="#f42a41"/>
             </svg>
@@ -161,48 +175,36 @@
         </div>
       </div>
 
-      <!-- Bottom Controls Bar (Matching GROLY demo: Left Scroll Down | Center Buttons | Right Live Stats) -->
-      <div class="groly-bottom-bar">
-        <!-- Bottom Left: Circular Glowing Scroll Down Indicator -->
-        <a class="groly-scroll-indicator" href="#projects" aria-label="Scroll down to projects">
-          <div class="scroll-ring-glow"></div>
-          <span class="scroll-text">Scroll<br>Down</span>
-          <svg class="scroll-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 5v14M19 12l-7 7-7-7"/>
-          </svg>
-        </a>
+      <!-- Right Column: Stats & Scroll Cue -->
+      <div class="editorial-col col-right">
+        <div class="editorial-stats-panel">
+          <div class="stats-box-item">
+            <span class="stats-value"><span id="heroLiveCount">0</span>+</span>
+            <span class="stats-desc">Live Projects</span>
+          </div>
+          <div class="stats-panel-divider" aria-hidden="true"></div>
+          <div class="stats-box-item">
+            <span class="stats-value">100%</span>
+            <span class="stats-desc">Open Source</span>
+          </div>
+        </div>
 
-        <!-- Center Action Buttons (Matching GROLY demo: Collaborate With Me & Discover My Works) -->
-        <div class="groly-cta-group">
-          <button class="btn btn-groly-primary" type="button" data-open-contact aria-label="Collaborate with Md Fazley Rabbi">
-            <span>Collaborate With Me</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 17L17 7M17 7H7M17 7V17"/>
-            </svg>
-          </button>
-          <a class="btn btn-groly-secondary" href="#projects">
-            <span>Discover My Works</span>
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <div class="tech-stack-pills" aria-label="Core technologies">
+          <span class="tech-pill" data-tech="Spring Boot">Spring Boot</span>
+          <span class="tech-pill" data-tech="Java">Java</span>
+          <span class="tech-pill" data-tech="Python">Python</span>
+          <span class="tech-pill" data-tech="PostgreSQL">PostgreSQL</span>
+          <span class="tech-pill" data-tech="JWT">JWT</span>
+        </div>
+
+        <a class="matthew-scroll-cue" href="#projects" aria-label="Scroll down to all projects">
+          <span class="scroll-cue-label">Scroll down</span>
+          <span class="scroll-cue-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 5v14M19 12l-7 7-7-7"/>
             </svg>
-          </a>
-        </div>
-
-        <!-- Bottom Right: Live Stats Counter Badge (Auto-updates with project count) -->
-        <div class="groly-stats-badge" id="heroLiveStats">
-          <div class="stats-badge-avatars">
-            <span class="avatar-chip av-1">AI</span>
-            <span class="avatar-chip av-2">FS</span>
-            <span class="avatar-chip av-3">DB</span>
-          </div>
-          <div class="stats-badge-data">
-            <div class="stats-badge-figure">
-              <span class="stats-number" id="heroLiveCount">0</span><span class="stats-plus">+</span>
-              <span class="stats-sync-pulse" title="Real-time live sync"></span>
-            </div>
-            <span class="stats-badge-label">Live Projects Online</span>
-          </div>
-        </div>
+          </span>
+        </a>
       </div>
     </div>
   </section>
