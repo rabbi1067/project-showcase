@@ -788,16 +788,16 @@
 
     function onScroll() {
       const currentY = window.scrollY;
-      if (currentY <= 220) {
+      if (currentY <= 300) {
         // In the hero viewport: keep clearly visible
         indicator.classList.remove("is-hidden");
-      } else if (currentY > lastY && currentY > 220) {
+      } else if (currentY > lastY && currentY > 300) {
         // Scrolling down past hero into projects: auto-hide
         indicator.classList.add("is-hidden");
-      } else if (currentY < lastY && currentY < 600) {
+      } else if (currentY < lastY && currentY < 750) {
         // Scrolling back up towards hero: show again
         indicator.classList.remove("is-hidden");
-      } else if (currentY >= 600) {
+      } else if (currentY >= 750) {
         // Deep in project content: keep hidden
         indicator.classList.add("is-hidden");
       }

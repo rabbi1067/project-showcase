@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -157,46 +157,25 @@
         </div>
       </div>
 
-      <!-- Bottom Controls Bar (Center Buttons & Animated Scroll Down Underneath Discover My Works) -->
-      <div class="groly-bottom-bar">
-        <div class="groly-bottom-spacer" aria-hidden="true"></div>
-
-        <div class="groly-bottom-center">
-          <div class="groly-cta-group">
-            <button class="btn btn-groly-primary" type="button" data-open-contact aria-label="Collaborate with Md Fazley Rabbi">
-              <span>Collaborate With Me</span>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 17L17 7M17 7H7M17 7V17"/>
-              </svg>
-            </button>
-            <a class="btn btn-groly-secondary" href="#projects">
-              <span>Discover My Works</span>
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 5v14M19 12l-7 7-7-7"/>
-              </svg>
-            </a>
-          </div>
-
-          <!-- 3D Animated Scroll Down Indicator (Centered Underneath Discover My Works with scroll auto-hide) -->
-          <a class="groly-scroll-indicator" id="heroScrollDown" href="#projects" aria-label="Scroll down to projects">
-            <span class="scroll-3d-chassis" aria-hidden="true">
-              <span class="scroll-3d-wheel-track">
-                <span class="scroll-3d-wheel"></span>
-              </span>
-            </span>
-            <span class="scroll-text">Scroll Down</span>
-            <span class="scroll-3d-chevrons" aria-hidden="true">
-              <svg class="scroll-chevron-top" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
-              <svg class="scroll-chevron-bot" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
-            </span>
+      <!-- Centered Hero Actions Stack (Row 1: CTAs -> Row 2: 10+ Live Projects -> Row 3: 3D Scroll Down) -->
+      <div class="groly-actions-stack">
+        <!-- Row 1: Primary CTA Buttons -->
+        <div class="groly-cta-group">
+          <button class="btn btn-groly-primary" type="button" data-open-contact aria-label="Collaborate with Md Fazley Rabbi">
+            <span>Collaborate With Me</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 17L17 7M17 7H7M17 7V17"/>
+            </svg>
+          </button>
+          <a class="btn btn-groly-secondary" href="#projects">
+            <span>Discover My Works</span>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
           </a>
         </div>
 
-        <!-- Bottom Right: Live Stats Counter Badge (Auto-updates with project count) -->
+        <!-- Row 2: Live Stats Counter Badge (Centered Underneath Buttons) -->
         <div class="groly-stats-badge" id="heroLiveStats">
           <div class="stats-badge-avatars">
             <span class="avatar-chip av-1">AI</span>
@@ -211,6 +190,24 @@
             <span class="stats-badge-label">Live Projects Online</span>
           </div>
         </div>
+
+        <!-- Row 3: 3D Animated Scroll Down Indicator (Centered Underneath Live Stats with scroll auto-hide) -->
+        <a class="groly-scroll-indicator" id="heroScrollDown" href="#projects" aria-label="Scroll down to projects">
+          <span class="scroll-3d-chassis" aria-hidden="true">
+            <span class="scroll-3d-wheel-track">
+              <span class="scroll-3d-wheel"></span>
+            </span>
+          </span>
+          <span class="scroll-text">Scroll Down</span>
+          <span class="scroll-3d-chevrons" aria-hidden="true">
+            <svg class="scroll-chevron-top" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+            <svg class="scroll-chevron-bot" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </span>
+        </a>
       </div>
     </div>
   </section>
