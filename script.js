@@ -710,24 +710,69 @@
     if (!canTilt) return;
     const hero = $("#hero");
     if (!hero) return;
-    const stage = $(".portrait-stage-inner", hero);
-    const letters = $(".giant-letters-track", hero);
+    const portrait = $(".groly-portrait-img", hero);
+    const core = $(".aura-radial-core", hero);
+    const watermark = $(".groly-watermark", hero);
+
     hero.addEventListener("pointermove", (e) => {
       if (e.pointerType !== "mouse") return;
       const r = hero.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
       const py = (e.clientY - r.top) / r.height - 0.5;
-      if (stage) {
-        stage.style.transform = `perspective(1000px) rotateY(${(px * 12).toFixed(2)}deg) rotateX(${(-py * 8).toFixed(2)}deg)`;
+      if (portrait) {
+        portrait.style.transform = `perspective(800px) rotateY(${(px * 10).toFixed(2)}deg) rotateX(${(-py * 7).toFixed(2)}deg)`;
       }
-      if (letters) {
-        letters.style.transform = `translateY(-8%) translate3d(${(-px * 24).toFixed(1)}px, ${(-py * 16).toFixed(1)}px, 0)`;
+      if (core) {
+        core.style.transform = `translate(calc(-50% + ${(px * 25).toFixed(1)}px), calc(-50% + ${(py * 20).toFixed(1)}px))`;
+      }
+      if (watermark) {
+        watermark.style.transform = `translate(calc(-50% + ${(-px * 30).toFixed(1)}px), calc(-50% + ${(-py * 16).toFixed(1)}px))`;
       }
     });
+
     hero.addEventListener("pointerleave", () => {
-      if (stage) stage.style.transform = "none";
-      if (letters) letters.style.transform = "translateY(-8%)";
+      if (portrait) portrait.style.transform = "none";
+      if (core) core.style.transform = "translate(-50%, -50%)";
+      if (watermark) watermark.style.transform = "translate(-50%, -50%)";
     });
+  }
+
+  function bindGrolyCapsules() {
+    const stage = $("#grolyStage");
+    if (!stage) return;
+    let hideTimer = null;
+
+    function showCapsules() {
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+        hideTimer = null;
+      }
+      stage.classList.add("show-capsules");
+    }
+
+    function scheduleHide() {
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        stage.classList.remove("show-capsules");
+        hideTimer = null;
+      }, 2500); // 2.5 seconds auto-hide delay after mouse leaves
+    }
+
+    // Mouse hover reveals skill tags immediately; leaving schedules hide after 2.5s
+    stage.addEventListener("mouseenter", showCapsules);
+    stage.addEventListener("mouseleave", scheduleHide);
+
+    // Support keyboard focus accessibility
+    stage.addEventListener("focusin", showCapsules);
+    stage.addEventListener("focusout", scheduleHide);
+
+    // Mobile touch interaction: tap portrait shows tags for 3 seconds then hides
+    stage.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "touch") {
+        showCapsules();
+        scheduleHide();
+      }
+    }, { passive: true });
   }
 
   /* ---------- Toast ---------- */
@@ -1249,6 +1294,7 @@
       notice.hidden = false;
     }
     bindHeroPointer();
+    bindGrolyCapsules();
     load();
   }
 
