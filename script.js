@@ -8,7 +8,7 @@
 (() => {
   "use strict";
 
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 9;
   const MAX_TITLE = 50;
   const MAX_WORDS = 100;
   const MAX_TAGS = 12;
@@ -109,7 +109,7 @@
     const sb = window.supabase.createClient(cfg.url, cfg.key);
     const fail = (error) => {
       const msg = String(error.message || error);
-      if (/INVALID_CODE/.test(msg)) return apiError("That security code is incorrect.", "INVALID_CODE");
+      if (/INVALID_CODE/i.test(msg) || /Wrong security code/i.test(msg)) return apiError("That security code is incorrect.", "INVALID_CODE");
       const known = msg.match(/INVALID_(TITLE|DESCRIPTION|REPO|LIVE)/);
       if (known) return apiError("Some details were not accepted. Check the form and try again.", known[0]);
       return apiError(msg, "ERROR");
@@ -140,39 +140,16 @@
         if (error) throw fail(error);
       },
       async update(id, p, code) {
-        try {
-          const { error } = await sb.rpc("showcase_update_project", {
-            p_code: code,
-            p_id: String(id),
-            p_title: p.title,
-            p_description: p.description,
-            p_live_url: p.live_url || null,
-            p_repo_url: p.repo_url,
-            p_tags: p.tags,
-          });
-          if (!error) return;
-          if (error && error.code !== "PGRST202") throw fail(error);
-        } catch (rpcErr) {
-          if (rpcErr && rpcErr.code && rpcErr.code !== "PGRST202") throw rpcErr;
-        }
-
-        const { error: codeErr } = await sb.rpc("showcase_delete_project", {
+        const { error } = await sb.rpc("showcase_update_project", {
           p_code: code,
-          p_id: "00000000-0000-0000-0000-000000000000",
+          p_id: String(id),
+          p_title: p.title,
+          p_description: p.description,
+          p_live_url: p.live_url || null,
+          p_repo_url: p.repo_url,
+          p_tags: p.tags,
         });
-        if (codeErr) throw fail(codeErr);
-
-        const { error: updErr } = await sb
-          .from("projects")
-          .update({
-            title: p.title,
-            description: p.description,
-            live_url: p.live_url || null,
-            repo_url: p.repo_url,
-            tags: p.tags,
-          })
-          .eq("id", id);
-        if (updErr) throw fail(updErr);
+        if (error) throw fail(error);
       },
       async stats() {
         const { data, error } = await sb.rpc("showcase_get_stats", { p_visitor: visitorId() });
